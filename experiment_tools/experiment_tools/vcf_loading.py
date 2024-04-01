@@ -5,16 +5,20 @@ from copy import deepcopy as copy
 import cyvcf2
 from itertools import islice
 
-def parse_VCF_to_genome_strings(input_vcf_file):
+def parse_VCF_to_genome_strings(input_vcf_file,snp_load_limit=None):
     print("loading VCF file")
     genomes = []
     reader = cyvcf2.VCF(input_vcf_file)
     pbar = tqdm()
+    count = 0
     while record_chunk := [a.genotypes for a in islice(reader,1000)]:
         ploidy = len(record_chunk[0][0])-1
         record_chunk = list(map(list,zip(*record_chunk)))
         genomes.append([bytes([gg[i] for gg in g for i in range(ploidy)]) for g in record_chunk])
         pbar.update(1000)
+        count += 1000
+        if (snp_load_limit is not None) and (count>snp_load_limit):
+            break
     pbar.close()
     reader.close()
     genomes = [b"".join(a) for a in zip(*genomes)]
