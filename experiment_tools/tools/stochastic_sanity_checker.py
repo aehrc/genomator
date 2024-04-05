@@ -12,7 +12,7 @@ from tqdm import tqdm
 @click.command()
 @click.argument('source_vcf_file', type=click.types.Path())
 @click.argument('synthetic_vcf_file', type=click.types.Path())
-@click.option('--diversity', type=click.INT, default=0)
+@click.option('--diversity', type=click.INT, default=1)
 @click.option('--trials', type=click.INT, default=500000)
 @click.option('--snp_load_limit', type=click.INT, default=10000)
 def checker(source_vcf_file,synthetic_vcf_file,diversity,trials,snp_load_limit):

@@ -21,7 +21,7 @@ from resample.bootstrap import confidence_interval
 def weighted_average(elements):
     return sum(e[0]*e[1] for e in elements)
 
-base_colours = ['r','b','g','m','c','w','k'] 
+base_colours = ['r','b','g','m','c','k','y'] 
 markers = ['.','v','s','P','*','d','X']
 
 @click.command()

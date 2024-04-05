@@ -3,8 +3,6 @@ def running(a):
     print("RUNNING: {}".format(a))
     os.system(a)
 
-prepend1 = "https://ftp-trace.ncbi.nih.gov/1000genomes/ftp/release/20130502/"
-chromisome_files1 = ["ALL.chr{}.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz".format(i) for i in range(1,23)]
 prepend = "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20201028_3202_phased/"
 chromisome_files = ["CCDG_14151_B01_GRM_WGS_2020-08-05_chr{}.filtered.shapeit2-duohmm-phased.vcf.gz".format(i) for i in range(1,23)]
 selected_samples = ["HG{:05d}".format(s) for s in [96, 97, 99, 100, 101, 102, 103, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
@@ -29,8 +27,6 @@ selected_samples = ["HG{:05d}".format(s) for s in [96, 97, 99, 100, 101, 102, 10
  956, 978, 982, 1028, 1029, 1031, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1058, 1060, 1061]]
 
 
-
-
 genes = {
   "AGBL4":(1,48532854,50023954),
   "FHIT":(3,59747277,61251452),
@@ -42,16 +38,15 @@ print("Splitting out genes")
 for gene,data in genes.items():
   if data[0] not in downloaded:
       downloaded.append(data[0])
-      print(f"downloading {chromisome_files1[data[0]-1]}")
-      running(f"wget {prepend1+chromisome_files1[data[0]-1]}")
-      running(f"wget {prepend1+chromisome_files1[data[0]-1]}.tbi")
-  running(f"bcftools view -r {data[0]}:{data[1]}-{data[2]} {chromisome_files1[data[0]-1]} > {gene}.vcf")
+      print(f"downloading {chromisome_files[data[0]-1]}")
+      running(f"wget {prepend+chromisome_files[data[0]-1]}")
+      running(f"wget {prepend+chromisome_files[data[0]-1]}.tbi")
+  running(f"bcftools view -r {data[0]}:{data[1]}-{data[2]} {chromisome_files[data[0]-1]} > {gene}.vcf")
   running(f"plink2 --vcf {gene}.vcf --maf 0.01 --hwe 1e-6 --rm-dup 'exclude-all' --recode vcf --out {gene}.cleaned")
   running(f"gzip {gene}.cleaned.vcf")
   running(f"mv {gene}.cleaned.vcf.gz {gene}.vcf.gz")
 running(f"plink2 --vcf AGBL4.vcf.gz --maf 0.05 --rm-dup 'exclude-all' --recode vcf --out AGBL4.SMALLER")
 running(f"gzip AGBL4.SMALLER.vcf")
-
 
 
 print("Downloading 1000 genomes data")

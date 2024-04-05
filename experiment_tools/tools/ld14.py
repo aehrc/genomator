@@ -22,9 +22,8 @@ def chunks(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
-base_colours = ['r','b','g','m','c','w','k'] 
+base_colours = ['r','b','g','m','c','k','y'] 
 markers = ['.','v','s','P','*','d','X']
-
 @click.command()
 @click.argument('input_vcf_file', type=click.types.Path())
 @click.argument('compare_vcf_file', nargs=-1, type=click.types.Path())

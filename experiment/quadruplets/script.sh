@@ -1,8 +1,5 @@
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_10.vcf 1000 1 1 --sample_group_size=10
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_20.vcf 1000 1 1 --sample_group_size=20
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_30.vcf 1000 1 1 --sample_group_size=30
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_40.vcf 1000 1 1 --sample_group_size=40
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_50.vcf 1000 1 1 --sample_group_size=50
+genomator ../sources/AGBL4.vcf.gz GENOMATOR_10.vcf 1000 1 1
+genomator ../sources/AGBL4.vcf.gz GENOMATOR-P_.vcf 1000 1 1 --sample_group_size=30 --exception_space=1
 MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_20.vcf 1000 --window_leng=20
 MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_40.vcf 1000 --window_leng=40
 MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_60.vcf 1000 --window_leng=60

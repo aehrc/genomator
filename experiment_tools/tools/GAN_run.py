@@ -32,14 +32,10 @@ import click
 
 
 
-def main_GAN(inpt,ag_size,epochs=10001,batch_size=32,gpu_count=0,dump_output_interval=-1,ploidy=2,output_vcf_file="GAN_output",input_vcf_file=None,base_layer_size=500):
+def main_GAN(inpt,ag_size,epochs=10001,batch_size=32,gpu_count=0,dump_output_interval=-1,ploidy=2,output_vcf_file="GAN_output",input_vcf_file=None,base_layer_size=800):
     #inpt = "1000G_real_genomes/805_SNP_1000G_real.hapt" #hapt format input file
     latent_size = 400#600 #size of noise input
     alph = 0.01 #alpha value for LeakyReLU
-    g_learn = 0.0001 #generator learning rate
-    d_learn = 0.0008 #discriminator learning rate
-    g_learn = 0.0002 #generator learning rate
-    d_learn = 0.0016 #discriminator learning rate
     g_learn = 0.0004 #generator learning rate
     d_learn = 0.0016 #discriminator learning rate
     #epochs = 10001
@@ -63,12 +59,9 @@ def main_GAN(inpt,ag_size,epochs=10001,batch_size=32,gpu_count=0,dump_output_int
 
     K.clear_session()
 
-    generator_shapes = [base_layer_size,base_layer_size]#[int(df_noname.shape[1]//1.2),int(df_noname.shape[1]//1.1)] #[1.2,1.1]#[5,5]#[1.2,1.1]
-    discriminator_shapes = [base_layer_size-200,base_layer_size-400]#[int(df_noname.shape[1]//2),int(df_noname.shape[1]//3)]  #[2,3]#[5,8]#[2,3]
+    generator_shapes = [base_layer_size,base_layer_size]
+    discriminator_shapes = [base_layer_size-200,base_layer_size-400]
     
-    #generator_shapes = [s-200 for s in generator_shapes]
-    #discriminator_shapes = [s-200 for s in discriminator_shapes]
-
     #Make generator
     generator = Sequential()
     generator.add(Dense(generator_shapes[0], input_shape=(latent_size,), kernel_regularizer=regularizers.l2(0.0001), kernel_initializer=initializers.RandomNormal(stddev=0.01), bias_initializer=initializers.Zeros()))
@@ -157,7 +150,7 @@ def main_GAN(inpt,ag_size,epochs=10001,batch_size=32,gpu_count=0,dump_output_int
 @click.option('--dump_output_interval', type=click.INT, default=-1)
 @click.option('--batch_size', type=click.INT, default=32)
 @click.option('--gpu_count', type=click.INT, default=0)
-@click.option('--base_layer_size', type=click.INT, default=500)
+@click.option('--base_layer_size', type=click.INT, default=800)
 def GAN_run(input_vcf_file, output_vcf_file, number_of_genomes,epochs,dump_output_interval,batch_size,gpu_count,base_layer_size):
     if input_vcf_file.split(".")[-1]=="pickle":
         with open(input_vcf_file,"rb") as f:
