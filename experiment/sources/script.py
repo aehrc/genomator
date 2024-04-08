@@ -3,8 +3,8 @@ def running(a):
     print("RUNNING: {}".format(a))
     os.system(a)
 
-prepend = "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20201028_3202_phased/"
-chromisome_files = ["CCDG_14151_B01_GRM_WGS_2020-08-05_chr{}.filtered.shapeit2-duohmm-phased.vcf.gz".format(i) for i in range(1,23)]
+prepend = "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20220422_3202_phased_SNV_INDEL_SV/"
+chromisome_files = ["1kGP_high_coverage_Illumina.chr{}.filtered.SNV_INDEL_SV_phased_panel.vcf.gz".format(i) for i in range(1,23)]
 selected_samples = ["HG{:05d}".format(s) for s in [96, 97, 99, 100, 101, 102, 103, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
  118, 119, 120, 121, 122, 123, 125, 126, 127, 128, 129, 130, 131, 132, 133, 136, 137, 138, 139, 140,
  141, 142, 143, 145, 146, 148, 149, 150, 151, 154, 155, 157, 158, 159, 160, 171, 173, 174, 176, 177,
