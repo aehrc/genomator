@@ -26,6 +26,10 @@ selected_samples = ["HG{:05d}".format(s) for s in [96, 97, 99, 100, 101, 102, 10
  732, 733, 734, 735, 736, 737, 738, 739, 740, 741, 742, 743, 759, 766, 844, 851, 864, 867, 879, 881,
  956, 978, 982, 1028, 1029, 1031, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1058, 1060, 1061]]
 
+print("Downloading 1000 genomes data")
+for c in chromisome_files:
+  running(f"wget {prepend+c}")
+  running(f"wget {prepend+c}.tbi")
 
 genes = {
   "AGBL4":(1,48532854,50023954),
@@ -33,14 +37,8 @@ genes = {
   "CCSER1":(4,90127394,91605295),
   "RBFOX1":(16,6019024,7713340)
 }
-downloaded = []
 print("Splitting out genes")
 for gene,data in genes.items():
-  if data[0] not in downloaded:
-      downloaded.append(data[0])
-      print(f"downloading {chromisome_files[data[0]-1]}")
-      running(f"wget {prepend+chromisome_files[data[0]-1]}")
-      running(f"wget {prepend+chromisome_files[data[0]-1]}.tbi")
   running(f"bcftools view -r {data[0]}:{data[1]}-{data[2]} {chromisome_files[data[0]-1]} > {gene}.vcf")
   running(f"plink2 --vcf {gene}.vcf --maf 0.01 --hwe 1e-6 --rm-dup 'exclude-all' --recode vcf --out {gene}.cleaned")
   running(f"gzip {gene}.cleaned.vcf")
@@ -48,11 +46,6 @@ for gene,data in genes.items():
 running(f"plink2 --vcf AGBL4.vcf.gz --maf 0.05 --rm-dup 'exclude-all' --recode vcf --out AGBL4.SMALLER")
 running(f"gzip AGBL4.SMALLER.vcf")
 
-
-print("Downloading 1000 genomes data")
-for c in chromisome_files:
-  running(f"wget {prepend+c}")
-  running(f"wget {prepend+c}.tbi")
 
 print("Cleaning big data")
 for i,file in enumerate(chromisome_files):
