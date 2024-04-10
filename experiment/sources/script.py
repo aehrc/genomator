@@ -39,7 +39,7 @@ genes = {
 }
 print("Splitting out genes")
 for gene,data in genes.items():
-  running(f"bcftools view -r {data[0]}:{data[1]}-{data[2]} {chromisome_files[data[0]-1]} > {gene}.vcf")
+  running(f"bcftools view -r chr{data[0]}:{data[1]}-{data[2]} {chromisome_files[data[0]-1]} > {gene}.vcf")
   running(f"plink2 --vcf {gene}.vcf --maf 0.01 --hwe 1e-6 --rm-dup 'exclude-all' --recode vcf --out {gene}.cleaned")
   running(f"gzip {gene}.cleaned.vcf")
   running(f"mv {gene}.cleaned.vcf.gz {gene}.vcf.gz")
