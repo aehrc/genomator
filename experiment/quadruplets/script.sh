@@ -1,5 +1,7 @@
 genomator ../sources/AGBL4.vcf.gz GENOMATOR_10.vcf 1000 1 1
+stochastic_sanity_checker.py  ../sources/AGBL4.vcf.gz GENOMATOR_10.vcf
 genomator ../sources/AGBL4.vcf.gz GENOMATOR-P_.vcf 1000 1 1 --sample_group_size=30 --exception_space=1
+stochastic_sanity_checker.py  ../sources/AGBL4.vcf.gz GENOMATOR-P_.vcf
 MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_20.vcf 1000 --window_leng=20
 MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_40.vcf 1000 --window_leng=40
 MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_60.vcf 1000 --window_leng=60

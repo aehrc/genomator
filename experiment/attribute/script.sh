@@ -1,10 +1,12 @@
 genomator ../sources/805_SNP_1000G_real_split1.vcf GENOMATOR_A.vcf 1000 1 1
+stochastic_sanity_checker.py ../sources/805_SNP_1000G_real_split1.vcf GENOMATOR_A.vcf
 MARK_run.py ../sources/805_SNP_1000G_real_split1.vcf MARK_A.vcf 1000 --window_leng=30
 GAN_run.py ../sources/805_SNP_1000G_real_split1.vcf GAN_A 1000 --dump_output_interval=300 --epochs=310 --base_layer_size=500
 RBM_run.py ../sources/805_SNP_1000G_real_split1.vcf RBM_A 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh=500 --lr=0.01
 CRBM_run.py ../sources/805_SNP_1000G_real_split1.vcf CRBM_A 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh=500 --fixnodes=300
 
 genomator ../sources/805_SNP_1000G_real_split2.vcf GENOMATOR_B.vcf 1000 1 1
+stochastic_sanity_checker.py ../sources/805_SNP_1000G_real_split2.vcf GENOMATOR_B.vcf
 MARK_run.py ../sources/805_SNP_1000G_real_split2.vcf MARK_B.vcf 1000 --window_leng=30
 GAN_run.py ../sources/805_SNP_1000G_real_split2.vcf GAN_B 1000 --dump_output_interval=300 --epochs=310 --base_layer_size=500
 RBM_run.py ../sources/805_SNP_1000G_real_split2.vcf RBM_B 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh=500 --lr=0.01

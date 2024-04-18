@@ -1,4 +1,5 @@
 genomator ../../sources/CCSER1.vcf.gz GENOMATOR.vcf 1000 1 1
+stochastic_sanity_checker.py  ../../sources/CCSER1.vcf.gz GENOMATOR.vcf
 MARK_run.py ../../sources/CCSER1.vcf.gz MARKOV.vcf 1000 --window_leng=30
 GAN_run.py ../../sources/CCSER1.vcf.gz GAN 1000 --dump_output_interval=300 --epochs=310
 RBM_run.py ../../sources/CCSER1.vcf.gz RBM 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250

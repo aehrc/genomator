@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-##Script for creating Markov chain haplotypes. Very inefficient in its current form.
-##Example run: python markover_batch.py 1000G_real_genomes/805_SNP_1000G_real.hapt 50 10 1
-
 #generating code adapted from:
 #https://gitlab.inria.fr/ml_genetics/public/artificial_genomes
 import numpy as np

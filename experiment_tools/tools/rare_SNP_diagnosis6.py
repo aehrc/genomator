@@ -5,17 +5,10 @@ import json
 import click
 from itertools import product
 from collections import defaultdict
-from genomator import parse_VCF_to_genome_strings
+from experiment_tools import parse_VCF_to_genome_strings
 
 
 
-
-
-# takes an input VCF and a single VCF output from genomator
-# then loads the information about the cluster genomator used to generate the output
-# and a count file output from reverse genomator
-# and and calculates (for thoes 'privacy revealed' individuals over a 50-60% threshold of counting)
-# how many of their private SNP combinations are revealed.
 @click.command()
 @click.argument('input_vcf_file', type=click.types.Path())
 @click.argument('output_vcf_file', type=click.types.Path())

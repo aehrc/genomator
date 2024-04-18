@@ -10,7 +10,7 @@ from tqdm import tqdm
 import ot
 import numpy as np
 from sklearn.decomposition import PCA
-from genomator import parse_VCF_to_genome_strings
+from experiment_tools import parse_VCF_to_genome_strings
 
 @click.command()
 @click.argument('input_vcf_file1', type=click.types.Path())

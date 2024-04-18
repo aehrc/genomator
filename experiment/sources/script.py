@@ -3,8 +3,11 @@ def running(a):
     print("RUNNING: {}".format(a))
     os.system(a)
 
+#the data_source and chromisome vcf files
 prepend = "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20220422_3202_phased_SNV_INDEL_SV/"
 chromisome_files = ["1kGP_high_coverage_Illumina.chr{}.filtered.SNV_INDEL_SV_phased_panel.vcf.gz".format(i) for i in range(1,23)]
+
+#NOTE: these are just the first 400 samples in the files
 selected_samples = ["HG{:05d}".format(s) for s in [96, 97, 99, 100, 101, 102, 103, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
  118, 119, 120, 121, 122, 123, 125, 126, 127, 128, 129, 130, 131, 132, 133, 136, 137, 138, 139, 140,
  141, 142, 143, 145, 146, 148, 149, 150, 151, 154, 155, 157, 158, 159, 160, 171, 173, 174, 176, 177,
@@ -47,7 +50,7 @@ running(f"plink2 --vcf AGBL4.vcf.gz --maf 0.05 --rm-dup 'exclude-all' --recode v
 running(f"gzip AGBL4.SMALLER.vcf")
 
 
-print("Cleaning big data")
+print("Compiling big data")
 for i,file in enumerate(chromisome_files):
   print(f"Cleaning chromisome {i+1}")
   running(f"bcftools view -s {','.join(selected_samples)} {file} > temp_CHROM{i+1}.vcf" )
@@ -58,10 +61,10 @@ print("Merging human genome data")
 running(f"bcftools concat {' '.join(['CHROM'+str(i+1)+'.vcf.gz' for i in range(len(chromisome_files))])} -o chr_filtered_.vcf")
 
 running(f"gzip chr_filtered_.vcf")
-print("Splitting")
+print("Splitting big data into incremental parts")
 for i in [100*4**j for j in range(9)]:
     print(i)
-    running("zcat chr_filtered_.vcf.gz | head -n {} | gzip > chr_filtered_{}.vcf.gz".format(i+193,i))
+    running("zcat chr_filtered_.vcf.gz | head -n {} | gzip > chr_filtered_{}.vcf.gz".format(i+113,i))
 print("pickling")
 for i in [100*4**j for j in range(9)]+[""]:
     running(f"vcf_to_pickle.py chr_filtered_{i}.vcf.gz chr_filtered_{i}.vcf.gz.pickle")
