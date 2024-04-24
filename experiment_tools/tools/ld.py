@@ -45,7 +45,7 @@ def ld_analyse(input_vcf_file, output_image, begin, end):
     #print("outputting")
     #plt.savefig(output_image, bbox_inches='tight')
 
-    matplotlib.image.imsave(output_image, Z)
+    matplotlib.image.imsave(output_image, Z, cmap='Grays', vmin=0.0, vmax=1.0)
 
 if __name__ == '__main__':
     ld_analyse()
