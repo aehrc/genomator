@@ -21,6 +21,8 @@ results = {m:(snps[:len(results[m])],results[m]) for m in results.keys()}
 plt.figure(figsize=(8.8,5.6))
 for index,m in enumerate(results.keys()):
     plt.plot(results[m][0],results[m][1],color=base_colours[index], label=m, linewidth=2)
+    if m!="GENOMATOR":
+        plt.annotate("✕",xy=(results[m][0][-1], results[m][1][-1]), ha='center',va='center', fontsize=16)
 
 extrapolated_x = [results['GENOMATOR'][0][-1], 64500000]
 extrapolated_y = [results['GENOMATOR'][1][-1],
