@@ -8,7 +8,7 @@ base_colours = ['r','b','g','m','c','k','y']
 
 with open("runtime_results.txt","r") as f:
     data = pd.read_csv(f)
-data = data.fillna(11000000)
+data = data.fillna(23514966)
 
 methods = set(data["METHOD"].tolist())
 methods = sorted(list(methods))
@@ -22,7 +22,7 @@ plt.figure(figsize=(8.8,5.6))
 for index,m in enumerate(results.keys()):
     plt.plot(results[m][0],results[m][1],color=base_colours[index], label=m, linewidth=2)
 
-extrapolated_x = [results['GENOMATOR'][0][-1], 23514966]
+extrapolated_x = [results['GENOMATOR'][0][-1], 64500000]
 extrapolated_y = [results['GENOMATOR'][1][-1],
         results['GENOMATOR'][1][-1] + 
         (results['GENOMATOR'][1][-1] - results['GENOMATOR'][1][-2])*(1.0/(results['GENOMATOR'][0][-1] - results['GENOMATOR'][0][-2])) *
