@@ -9,8 +9,15 @@ import math
 import allel
 from tqdm import tqdm
 from scipy.spatial.distance import squareform
+from scipy.ndimage.filters import gaussian_filter
 import numpy as np
 import matplotlib.image
+
+
+def add_border(Z,size=20):
+    Z = [[0]*len(Z[0]) for i in range(size)]+Z+[[0]*len(Z[0]) for i in range(size)]
+    Z = [([0]*size)+zz+([0]*size) for zz in Z]
+    return Z
 
 @click.command()
 @click.argument('input_vcf_file', type=click.types.Path())
@@ -44,6 +51,11 @@ def ld_analyse(input_vcf_file, output_image, begin, end):
     #plt.imshow(Z,interpolation="nearest")
     #print("outputting")
     #plt.savefig(output_image, bbox_inches='tight')
+
+    Z = gaussian_filter(Z,sigma=2)
+    Z = 2.0/(1+np.power(Z-1,10))-1
+    Z = np.array(add_border(Z.tolist()))
+    
 
     matplotlib.image.imsave(output_image, Z, cmap='Grays', vmin=0.0, vmax=1.0)
 
