@@ -96,9 +96,10 @@ ys2 = [d[2]*100.0/1600 for d in w_dataset]
 ys2_lower,ys2_upper = 1*math.floor(min(ys2)/1),1*math.ceil(max(ys2)/1)
 ys2 = [(yy-ys2_lower)/(ys2_upper-ys2_lower) for yy in ys2]
 
+
 # Build the plot
-fig, ax = plt.subplots()
-ax.bar(x_pos, ys, yerr=yerr, align='center', alpha=0.9, ecolor='black', color="white", capsize=2, label="Exposure Risk", edgecolor = "black")
+fig, ax = plt.subplots(figsize=(8.5,4.5))
+ax.bar(x_pos, ys, yerr=yerr, align='center', alpha=0.9, ecolor='royalblue', color="lightskyblue", capsize=2, label="Exposure Risk")#, edgecolor = "black")
 ax.plot(x_pos, ys2, color="black",linewidth=2, label="Wasserstein")
 ax.set_ylabel('Exposure Risk that a synthetic output could be used\nto identify some individual in the population')
 ax.set_xlabel('\nZ parameter')
@@ -116,8 +117,5 @@ plt.legend(loc="right")
 # Save the figure and show
 plt.tight_layout()
 plt.savefig('bar_plot_with_error_bars.png')
-#plt.show()
-
-
 
 

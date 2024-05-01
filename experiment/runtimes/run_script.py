@@ -1,5 +1,5 @@
 import os
-import time
+import subprocess
 
 print("Doing Large Scale Runtime Experiment")
 methods = {
@@ -15,9 +15,8 @@ with open("runtime_results.txt","w") as f:
 for k in methods.keys():
     for index in indices:
         print(k,index)
-        t = time.time()
-        os.system(methods[k].format(index))
-        t = time.time()-t
+        t = subprocess.getoutput("\\time --format=%U " + methods[k].format(index))
+        t = t.split("\n")[-1]
         os.system("rm dummy_output*")
         with open("runtime_results.txt","a") as f:
             f.write(f"{k},{index},{t}\n")

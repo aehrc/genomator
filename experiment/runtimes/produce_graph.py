@@ -24,7 +24,7 @@ for index,m in enumerate(results.keys()):
     if m!="GENOMATOR":
         plt.annotate("✕",xy=(results[m][0][-1], results[m][1][-1]), ha='center',va='center', fontsize=16)
 
-extrapolated_x = [results['GENOMATOR'][0][-1], 64500000]
+extrapolated_x = [results['GENOMATOR'][0][-1], 64500000/1000]
 extrapolated_y = [results['GENOMATOR'][1][-1],
         results['GENOMATOR'][1][-1] + 
         (results['GENOMATOR'][1][-1] - results['GENOMATOR'][1][-2])*(1.0/(results['GENOMATOR'][0][-1] - results['GENOMATOR'][0][-2])) *
@@ -45,4 +45,4 @@ plt.gca().xaxis.set_major_formatter(FuncFormatter(formatter))
 plt.gca().yaxis.set_major_formatter(FuncFormatter(formatter))
 
 plt.tight_layout()
-plt.show()
+plt.savefig("runtime_graph.png", bbox_inches='tight')
