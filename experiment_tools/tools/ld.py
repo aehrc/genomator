@@ -56,7 +56,7 @@ def ld_analyse(input_vcf_file, output_image, begin, end):
     Z = 2.0/(1+np.power(Z-1,10))-1
     Z = np.array(add_border(Z.tolist(),fill=1.0))
 
-    matplotlib.image.imsave(output_image, Z, cmap='Grays', vmin=0.0, vmax=1.0)
+    matplotlib.image.imsave(output_image, Z, cmap='Greys', vmin=0.0, vmax=1.0)
 
 if __name__ == '__main__':
     ld_analyse()
