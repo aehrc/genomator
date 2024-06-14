@@ -11,7 +11,7 @@ pickle_to_vcf.py CRBM1201.pickle ../../sources/CCSER1.vcf.gz CRBM.vcf
 
 ld14.py ../../sources/CCSER1.vcf.gz CRBM.vcf GAN.vcf GENOMATOR.vcf MARKOV.vcf RBM.vcf --max_offset=500 --max_y_limit=0.025 --chunk_size=15
 echo results > results.txt
-ld_window_analysis.py ../../sources/CCSER1.vcf.gz CRBM.vcf GAN.vcf GENOMATOR.vcf MARKOV.vcf RBM.vcf --max_offset=500 --max_y_limit=0.025 --chunk_size=15 --output_image_file=LD_window.png >> results.txt
+ld_window_analysis.py ../../sources/CCSER1.vcf.gz CRBM.vcf GAN.vcf GENOMATOR.vcf MARKOV.vcf RBM.vcf --max_offset=500 --max_y_limit=0.035 --chunk_size=15 --output_image_file=LD_window.png >> results.txt
 ld11.py ../../sources/CCSER1.vcf.gz >> results.txt
 echo average >> results.txt
 ld10.py ../../sources/CCSER1.vcf.gz CRBM.vcf GAN.vcf GENOMATOR.vcf MARKOV.vcf RBM.vcf >> results.txt
