@@ -1,0 +1,5 @@
+metadata_version: 1
+name: Genomator capsule
+description: |-
+  Capsule accompanying paper: Privacy-hardened and hallucination-resistant synthetic data generation with logic-solvers.
+  Containing analysis and generation of results excluding the generation of results from genomator itself (including the analysis thereof)
