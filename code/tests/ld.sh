@@ -35,7 +35,7 @@ ld_png () {
 ld_png $INPUT_VCF REF
 for alg in GENOMATOR MARK GAN RBM CRBM; do
     vcf="${alg}.vcf"
-    if [[ "${alg}" == "None!" ]]; then
+    if [[ "${alg}" == "GENOMATOR" ]]; then
         $alg "$INPUT_VCF" "$vcf"
     else
         from_vcfshark $alg "$vcf"

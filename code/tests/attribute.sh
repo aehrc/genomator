@@ -31,7 +31,7 @@ echo -e "Method\tIn-Data Distance\tOut-Data Distance" > "$result_file"
 for alg in GENOMATOR MARK GAN RBM CRBM; do
     for i in "A" "B"; do
         vcf="${alg}_${i}.vcf"
-        if [[ "${alg}" == "None!" ]]; then
+        if [[ "${alg}" == "GENOMATOR" ]]; then
             $alg "${INPUT_VCF_PREFIX}${i}.vcf" "$vcf"
         else
             from_vcfshark $alg $i "$vcf"

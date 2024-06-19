@@ -31,7 +31,7 @@ for alg in GENOMATOR MARK GAN RBM CRBM; do
     echo -e "run\tavg\tstdev" > $output
     for i in {1..9}; do
         vcf="${alg}_${i}.vcf"
-        if [[ "${alg}" == "None!" ]]; then
+        if [[ "${alg}" == "GENOMATOR" ]]; then
             $alg "$INPUT_VCF" "$vcf"
         else
             from_vcfshark $alg $i "$vcf"

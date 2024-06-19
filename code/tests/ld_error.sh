@@ -36,7 +36,7 @@ for gene in "AGBL4"; do
     vcf_paths=($input_vcf)
     for alg in GENOMATOR MARK GAN RBM CRBM; do
         vcf="${gene}/${alg}.vcf"
-        if [[ "${alg}" == "None!" ]]; then
+        if [[ "${alg}" == "GENOMATOR" ]]; then
             $alg "$input_vcf" "$vcf"
         else
             from_vcfshark $alg $gene "$vcf"
