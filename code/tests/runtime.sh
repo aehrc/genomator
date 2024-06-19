@@ -31,7 +31,7 @@ for alg in GENOMATOR MARKOV GAN RBM CRBM; do
     if [[ "${alg}" == "GENOMATOR" ]]; then
         for i in 100 400 1600 6400 25600 102400 409600 1638400 6553600 11757483; do
             input_vcf="${INPUT_FILE_PREFIX}${i}${INPUT_VCF_SUFFIX}"
-            tar -xzf "${INPUT_VCF_DIR}${input_vcf}${TAR_SUFFIX}" --no-same-owner
+            tar -xzf "${INPUT_VCF_DIR}${input_vcf}${TAR_SUFFIX}" --no-same-owner -O > $input_vcf
             $alg $input_vcf $TEMP_RUNTIME_FILE
             echo -en "${alg}\t${i}\t" >> $RESULTS_FILE
             cat $TEMP_RUNTIME_FILE >> $RESULTS_FILE
