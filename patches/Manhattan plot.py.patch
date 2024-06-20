@@ -1,0 +1,72 @@
+1,11d0
+< #!/usr/bin/env python
+< # coding: utf-8
+< 
+< # # Manhattan plot
+< # * Create Manhattan plots for both the original and final synthetic genome/phenome data.
+< # * You will need to know the name of the lm*.csv file you created
+< # * Manhattan plots show the negative logarithm of the P-value as a function of genomic location. Thus the SNPs with the most significant association stand out on the plot, usually as stacks of points because of haploblock structure. 
+< 
+< # In[2]:
+< 
+< 
+16,24c5,8
+< base_path = pathlib.Path(os.getcwd().replace("/research_paper_code/notebooks", ""))
+< data_path = base_path / 'mice_data_set' / 'data' 
+< real_gwas_path = base_path / 'mice_data_set' / 'out' 
+< synthetic_gwas_path = base_path / 'mice_data_set' / 'out_synth'
+< data_path
+< 
+< 
+< # In[3]:
+< 
+---
+> base_path = pathlib.Path(os.getcwd()) #pathlib.Path(os.getcwd().replace("/research_paper_code/notebooks", ""))
+> data_path = base_path / 'data' 
+> real_gwas_path = base_path / 'out' 
+> synthetic_gwas_path = base_path / 'out_synth'
+30,33d13
+< 
+< # In[11]:
+< 
+< 
+39d18
+<     df
+63a43
+>     plt.savefig('manhattan.png', bbox_inches='tight')
+65,72c45,48
+< # In[12]:
+< 
+< 
+< filename = real_gwas_path / "lm_abBMD_1_79646.csv"
+< real_world = pd.read_csv(filename)
+< #real_world = pd.read_csv('/home/amy/GitHub/synthetic-data-genomics/mice_data_set/out/lm_abBMD_1_79646.csv')
+< manhattan_plot(real_world, title='Manhattan Plot - Real World')
+< 
+---
+> A = os.listdir(synthetic_gwas_path)
+> A = [a for a in A if a[-3:]=="csv"]
+> A = [a for a in A if a[:2]=="lm"]
+> assert len(A)==1, "multiple compatable files to load"
+74,77c50
+< # In[13]:
+< 
+< 
+< filename = synthetic_gwas_path / "lm_batchall_abBMD_1_71316.csv"
+---
+> filename = synthetic_gwas_path / A[0]
+79d51
+< #synthetic = pd.read_csv('/home/amy/GitHub/synthetic-data-genomics/mice_data_set/out_synth/lm_batchall_abBMD_1_71316.csv')
+81,92d52
+< 
+< 
+< # In[ ]:
+< 
+< 
+< 
+< 
+< 
+< # In[ ]:
+< 
+< 
+< 

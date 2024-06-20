@@ -1,0 +1,56 @@
+4,9c4,9
+< install.packages("qtl", repos = "http://cran.us.r-project.org")
+< install.packages("qqman", repos = "http://cran.us.r-project.org")
+< install.packages("data.table", repos = "http://cran.us.r-project.org")
+< install.packages("stringr", repos = "http://cran.us.r-project.org")
+< install.packages("qqman", repos = "http://cran.us.r-project.org")
+< install.packages("devtools", repos = "http://cran.us.r-project.org")
+---
+> renv::install("qtl")
+> renv::install("qqman")
+> renv::install("data.table")
+> renv::install("stringr")
+> renv::install("qqman")
+> renv::install("devtools")
+15,16c15,16
+< r_base          <- "research_paper_code"
+< experiment_dir  <- "mice_data_set" 
+---
+> r_base          <- "."
+> experiment_dir  <- "." 
+44,46c44,46
+< gemma.exe      <- paste("./", "gemma-0.98.4-linux-static-AMD64", sep="")
+< geno_txt_base       <- paste(experiment_dir, "/data/synthetic_genome_data", sep="")
+< map_txt_base       <- paste(experiment_dir, "/data/genome_map_data", sep="")
+---
+> gemma.exe      <- "gemma"
+> geno_txt_base       <- paste(experiment_dir, "", sep="")
+> map_txt_base       <- paste(experiment_dir, "", sep="")
+49c49
+< pheno_synth_file <- paste(experiment_dir, "/data/phenome_alldata_synth.csv", sep="")
+---
+> pheno_synth_file <- paste(experiment_dir, "/new_phenotypes.csv", sep="")
+168,175c168,175
+< # Now you can run GWAS for a particular synthetic genome batch
+< # Be sure the contents of out_synth doesn't already have output for this batch or it won't rerun
+< # Restart the notebook for each call to run_gwas
+< 
+< batch = 2316
+< geno_txt       <- paste(geno_txt_base, "/synthetic_genomes_batch", batch, ".txt", sep="")
+< map_txt       <- paste(map_txt_base, "/map_abBMD_batch", batch, ".txt", sep="")
+< run_gwas(geno_txt, map_txt, pheno_all, analysis, batch)
+---
+> ## Now you can run GWAS for a particular synthetic genome batch
+> ## Be sure the contents of out_synth doesn't already have output for this batch or it won't rerun
+> ## Restart the notebook for each call to run_gwas
+> #
+> #batch = 2316
+> #geno_txt       <- paste(geno_txt_base, "/synthetic_genomes_batch", batch, ".txt", sep="")
+> #map_txt       <- paste(map_txt_base, "/map_abBMD_batch", batch, ".txt", sep="")
+> #run_gwas(geno_txt, map_txt, pheno_all, analysis, batch)
+184,185c184,185
+< geno_txt       <- paste(geno_txt_base, "/synthetic_genomes_allbatches.txt", sep="")
+< map_txt       <- paste(map_txt_base, "/map_abBMD_allbatches.txt", sep="")
+---
+> geno_txt       <- paste(geno_txt_base, "/new_genomes.txt", sep="")
+> map_txt       <- paste(map_txt_base, "/map.txt", sep="")

@@ -1,0 +1,62 @@
+1,9d0
+< #!/usr/bin/env python
+< # coding: utf-8
+< 
+< # # Compare Associations
+< # * This notebook compares the final GWAS p-values for the full synthetic genome/phenome datasets to those in the original genome/phenome datasets and computes the precision, recall and F1 values.
+< 
+< # In[1]:
+< 
+< 
+14,21c5,8
+< base_path = pathlib.Path(os.getcwd().replace("/synthetics", ""))
+< data_path = base_path / 'mice_data_set' / 'data' 
+< real_gwas_path = base_path / 'mice_data_set' / 'out' 
+< synthetic_gwas_path = base_path / 'mice_data_set' / 'out_synth'
+< 
+< 
+< # In[6]:
+< 
+---
+> base_path = pathlib.Path(os.getcwd())
+> data_path = base_path / 'data' 
+> real_gwas_path = base_path / 'out' 
+> synthetic_gwas_path = base_path / 'out_synth'
+25c12,18
+< real_snps = pd.read_csv(real_gwas_path / f'lm_{PHENOTYPE}_1_79646.csv')
+---
+> A = os.listdir(real_gwas_path)
+> A = [a for a in A if a[-3:]=="csv"]
+> A = [a for a in A if a[:2]=="lm"]
+> assert len(A)==1, "multiple compatable files to load"
+> 
+> #real_snps = pd.read_csv(real_gwas_path / f'lm_{PHENOTYPE}_1_79646.csv')
+> real_snps = pd.read_csv(real_gwas_path / A[0])
+32,35d24
+< # In[7]:
+< 
+< 
+< # Be sure to update the name of your lm file appropriately
+37c26,30
+< synthetic_snps = pd.read_csv(synthetic_gwas_path / 'lm_batchall_abBMD_1_71316.csv') 
+---
+> A = os.listdir(synthetic_gwas_path)
+> A = [a for a in A if a[-3:]=="csv"]
+> A = [a for a in A if a[:2]=="lm"]
+> assert len(A)==1, "multiple compatable files to load"
+> synthetic_snps = pd.read_csv(synthetic_gwas_path / A[0]) 
+43,46d35
+< 
+< # In[8]:
+< 
+< 
+54,57d42
+< 
+< # In[9]:
+< 
+< 
+61,64d45
+< 
+< 
+< # In[ ]:
+< 
