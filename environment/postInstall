@@ -38,6 +38,12 @@ make
 make install
 cd ..
 
+mkdir plink
+cd plink
+wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20231211.zip
+unzip plink_linux_x86_64_20231211.zip
+cp plink /usr/bin/
+cd ..
 
 # git clone https://github.com/aehrc/genomator.git
 # cd genomator/experiment_tools/
