@@ -28,7 +28,7 @@ CRBM () {
 RESULTS_DIR=$1
 
 ld_png () {
-    ld.py $1 "${RESULTS_DIR}/AGBL4_dataset_ld_${2}.png" --begin=0 --end=1000
+    ld.py $1 "${RESULTS_DIR}/AGBL4_dataset_ld_${2}.png" --begin=0 --end=2000
 }
 
 
