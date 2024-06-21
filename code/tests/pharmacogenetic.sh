@@ -3,8 +3,9 @@
 set -exuo pipefail
 
 vcfshark decompress /data/vcfshark/pharmacogenetic/ALL.chr10_and_16.cleaned.vcfshark ALL.chr10_and_16.cleaned.vcf
-genomator ALL.chr10_and_16.cleaned.vcf GENOMATOR.vcf 1000 1 1
-# vcfshark decompress /data/vcfshark/pharmacogenetic/GENOMATOR.vcfshark GENOMATOR.vcf
+# Too large a job for Cloud Ocean, use a file generated elsewhere
+# genomator ALL.chr10_and_16.cleaned.vcf GENOMATOR.vcf 1000 1 1
+vcfshark decompress /data/vcfshark/pharmacogenetic/GENOMATOR.vcfshark GENOMATOR.vcf
 
 #Input files: 
 #   - ALL.chr10_and_16.cleaned.vcf
