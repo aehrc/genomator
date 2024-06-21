@@ -3,3 +3,28 @@ name: Genomator capsule
 description: |-
   Capsule accompanying paper: Privacy-hardened and hallucination-resistant synthetic data generation with logic-solvers.
   Containing analysis and generation of results excluding the generation of results from genomator itself (including the analysis thereof)
+authors:
+- name: Mark A Burgess
+  affiliations:
+  - name: CSIRO
+- name: Brendan Hosking
+  affiliations:
+  - name: CSIRO
+- name: Roc Reguant
+  affiliations:
+  - name: CSIRO
+- name: Anubhav Kaphle
+  affiliations:
+  - name: CSIRO
+- name: Mitchell J. O'Brien
+  affiliations:
+  - name: CSIRO
+- name: Letitia M.F. Sng
+  affiliations:
+  - name: CSIRO
+- name: Yatish Jain
+  affiliations:
+  - name: CSIRO
+- name: Denis C. Bauer
+  affiliations:
+  - name: CSIRO
