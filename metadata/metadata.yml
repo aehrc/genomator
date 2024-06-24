@@ -1,8 +1,11 @@
 metadata_version: 1
 name: Genomator capsule
-description: |-
-  Capsule accompanying paper: Privacy-hardened and hallucination-resistant synthetic data generation with logic-solvers.
-  Containing analysis and generation of results excluding the generation of results from genomator itself (including the analysis thereof)
+description: "Capsule accompanying paper: Privacy-hardened and hallucination-resistant
+  synthetic data generation with logic-solvers.\nContaining analysis and generation
+  of results.\n\nCitations:\n\nThe data files are licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0).\nCopyright
+  (c) 2024 Commonwealth Scientific and Industrial Research Organisation (CSIRO) ABN
+  41 687 119 230.\n \nThe datafiles (with the exception of those 805 in their pathname)
+  are adapted from the phased panel of Byrska-Bishop et al. Cell, 2022 (PMID: 36055201)."
 authors:
 - name: Mark A Burgess
   affiliations:
