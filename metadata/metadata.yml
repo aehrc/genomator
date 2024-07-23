@@ -1,5 +1,6 @@
 metadata_version: 1
-name: Genomator capsule
+name: Privacy-hardened and hallucination-resistant synthetic data generation with
+  logic-solvers
 description: "Capsule accompanying paper: Privacy-hardened and hallucination-resistant
   synthetic data generation with logic-solvers.\nContaining analysis and generation
   of results.\n\nCitations:\n\nThe data files are licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0).\nCopyright
