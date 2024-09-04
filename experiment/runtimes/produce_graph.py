@@ -24,12 +24,12 @@ for index,m in enumerate(results.keys()):
     if m!="GENOMATOR":
         plt.annotate("✕",xy=(results[m][0][-1], results[m][1][-1]), ha='center',va='center', fontsize=16)
 
-extrapolated_x = [results['GENOMATOR'][0][-1], 64500000/1000]
-extrapolated_y = [results['GENOMATOR'][1][-1],
-        results['GENOMATOR'][1][-1] + 
-        (results['GENOMATOR'][1][-1] - results['GENOMATOR'][1][-2])*(1.0/(results['GENOMATOR'][0][-1] - results['GENOMATOR'][0][-2])) *
-        (extrapolated_x[-1]-extrapolated_x[-2]) ]
-plt.plot(extrapolated_x, extrapolated_y, linestyle=(0,(1.5,2)), color=base_colours[methods.index('GENOMATOR')], linewidth=2)
+#extrapolated_x = [results['GENOMATOR'][0][-1], 64500000/1000]
+#extrapolated_y = [results['GENOMATOR'][1][-1],
+#        results['GENOMATOR'][1][-1] + 
+#        (results['GENOMATOR'][1][-1] - results['GENOMATOR'][1][-2])*(1.0/(results['GENOMATOR'][0][-1] - results['GENOMATOR'][0][-2])) *
+#        (extrapolated_x[-1]-extrapolated_x[-2]) ]
+#plt.plot(extrapolated_x, extrapolated_y, linestyle=(0,(1.5,2)), color=base_colours[methods.index('GENOMATOR')], linewidth=2)
 
 plt.loglog()
 plt.title('Runtimes at Scale', pad=25)#, fontsize=15)
@@ -38,7 +38,7 @@ plt.ylabel('Runtime to generate one synthetic genome (mins)', labelpad=17, fonts
 plt.grid(visible=True, which='major', linewidth=0.5, linestyle='-')
 plt.grid(visible=True, which='minor', linewidth=0.4, linestyle='-', axis="x")
 lgnd = plt.legend(loc="center left", scatterpoints=1, fontsize=10, bbox_to_anchor=(1.05,0.5), frameon=False)
-plt.axis([0.1,100000,0.01,10000])
+plt.axis([0.1,20000,0.01,1000])
 
 formatter = lambda x,y: "{0:g}".format(x)
 plt.gca().xaxis.set_major_formatter(FuncFormatter(formatter))

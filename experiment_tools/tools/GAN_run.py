@@ -8,7 +8,8 @@ import tensorflow.keras as keras
 import tensorflow.keras.backend as K
 from tensorflow.keras.layers import Input, Dense, Activation, LeakyReLU, BatchNormalization
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
+#from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers.legacy import Adam
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import pandas as pd

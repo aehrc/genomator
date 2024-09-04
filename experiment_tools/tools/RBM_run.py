@@ -11,7 +11,6 @@ from ssl import ALERT_DESCRIPTION_HANDSHAKE_FAILURE
 import torch
 import h5py
 import numpy as np
-from scipy.integrate import simps
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import pickle

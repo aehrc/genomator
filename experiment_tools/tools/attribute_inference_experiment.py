@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 import click
 from experiment_tools import *
-from matplotlib import pyplot as plt
 from random import shuffle
 from tqdm import tqdm
-import seaborn as sns
 import numpy as np
-import scipy
 
 def get_min_dist(x, dataset):
     min_dist = float("inf")
     for d in dataset:
-        dist = sum(a1!=a2 for a1,a2 in zip(x,d))
+        dist = np.linalg.norm(x-d,ord=0)
         if dist < min_dist:
             min_dist = dist
     return min_dist
@@ -23,11 +20,16 @@ def get_min_dist(x, dataset):
 @click.argument('output_vcf_file1', type=click.types.Path())
 @click.argument('output_vcf_file2', type=click.types.Path())
 @click.option('--sample_size', '-s', type=click.INT, default=None)
-def attribute_experiment(original_vcf_file1, original_vcf_file2, output_vcf_file1, output_vcf_file2,sample_size):
-    original1, _ = parse_VCF_to_genome_strings(original_vcf_file1)
-    original2, _ = parse_VCF_to_genome_strings(original_vcf_file2)
-    output1, _ = parse_VCF_to_genome_strings(output_vcf_file1)
-    output2, _ = parse_VCF_to_genome_strings(output_vcf_file2)
+@click.option('--silent', type=click.BOOL, default=False)
+def attribute_experiment(original_vcf_file1, original_vcf_file2, output_vcf_file1, output_vcf_file2,sample_size, silent):
+    original1, _ = parse_VCF_to_genome_strings(original_vcf_file1,silent=silent)
+    original2, _ = parse_VCF_to_genome_strings(original_vcf_file2,silent=silent)
+    output1, _ = parse_VCF_to_genome_strings(output_vcf_file1,silent=silent)
+    output2, _ = parse_VCF_to_genome_strings(output_vcf_file2,silent=silent)
+    if not (len(original1)>0 and len(original2)>0 and len(output1)>0 and len(output2)>0):
+        if not silent:
+            print("ERROR: Inputs empty")
+        return
     
     shuffle(original1)
     shuffle(original2)
@@ -35,12 +37,17 @@ def attribute_experiment(original_vcf_file1, original_vcf_file2, output_vcf_file
         original1 = original1[:sample_size]
         original2 = original2[:sample_size]
 
+    original1 = [np.array(bytearray(r),dtype=np.int8) for r in original1]
+    original2 = [np.array(bytearray(r),dtype=np.int8) for r in original2]
+    output1 = [np.array(bytearray(r),dtype=np.int8) for r in output1]
+    output2 = [np.array(bytearray(r),dtype=np.int8) for r in output2]
+
     results = []
-    for o in tqdm(original1):
+    for o in tqdm(original1) if not silent else original1:
         x = get_min_dist(o,output1)*1.0/len(o)
         y = get_min_dist(o,output2)*1.0/len(o)
         results.append((x,y))
-    for o in tqdm(original2):
+    for o in tqdm(original2) if not silent else original2:
         x = get_min_dist(o,output2)*1.0/len(o)
         y = get_min_dist(o,output1)*1.0/len(o)
         results.append((x,y))

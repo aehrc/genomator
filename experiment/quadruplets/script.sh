@@ -12,10 +12,10 @@ MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_140.vcf 1000 --window_leng=140
 MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_160.vcf 1000 --window_leng=160
 MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_180.vcf 1000 --window_leng=180
 MARK_run.py ../sources/AGBL4.vcf.gz MARKOV_200.vcf 1000 --window_leng=200
-GAN_run.py ../sources/AGBL4.vcf.gz GAN_A 1000 --dump_output_interval=300 --epochs=310 --base_layer_size=500
-GAN_run.py ../sources/AGBL4.vcf.gz GAN_B 1000 --dump_output_interval=300 --epochs=310 --base_layer_size=600
-GAN_run.py ../sources/AGBL4.vcf.gz GAN_C 1000 --dump_output_interval=300 --epochs=310 --base_layer_size=700
-GAN_run.py ../sources/AGBL4.vcf.gz GAN_D 1000 --dump_output_interval=300 --epochs=310 --base_layer_size=800
+GAN_run_orig.py ../sources/AGBL4.vcf.gz GAN_A 1000 --dump_output_interval=20000 --epochs=20010 --layer_multiplier=1.0
+GAN_run_orig.py ../sources/AGBL4.vcf.gz GAN_B 1000 --dump_output_interval=20000 --epochs=20010 --layer_multiplier=0.7
+GAN_run_orig.py ../sources/AGBL4.vcf.gz GAN_C 1000 --dump_output_interval=20000 --epochs=20010 --layer_multiplier=1.3
+GAN_run_orig.py ../sources/AGBL4.vcf.gz GAN_D 1000 --dump_output_interval=20000 --epochs=20010 --layer_multiplier=1.6
 RBM_run.py ../sources/AGBL4.vcf.gz RBM_A 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh=500 --lr=0.01
 RBM_run.py ../sources/AGBL4.vcf.gz RBM_B 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh=700 --lr=0.01
 RBM_run.py ../sources/AGBL4.vcf.gz RBM_C 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh=500 --lr=0.005
@@ -25,10 +25,10 @@ CRBM_run.py ../sources/AGBL4.vcf.gz CRBM_B 1000 --dump_output_interval=1200 --gp
 CRBM_run.py ../sources/AGBL4.vcf.gz CRBM_C 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh=700 --fixnodes=300
 CRBM_run.py ../sources/AGBL4.vcf.gz CRBM_D 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh=700 --fixnodes=400
 
-pickle_to_vcf.py GAN_A300.pickle ../sources/AGBL4.vcf.gz GAN_A.vcf
-pickle_to_vcf.py GAN_B300.pickle ../sources/AGBL4.vcf.gz GAN_B.vcf
-pickle_to_vcf.py GAN_C300.pickle ../sources/AGBL4.vcf.gz GAN_C.vcf
-pickle_to_vcf.py GAN_D300.pickle ../sources/AGBL4.vcf.gz GAN_D.vcf
+pickle_to_vcf.py GAN_A20000.pickle ../sources/AGBL4.vcf.gz GAN_A.vcf
+pickle_to_vcf.py GAN_B20000.pickle ../sources/AGBL4.vcf.gz GAN_B.vcf
+pickle_to_vcf.py GAN_C20000.pickle ../sources/AGBL4.vcf.gz GAN_C.vcf
+pickle_to_vcf.py GAN_D20000.pickle ../sources/AGBL4.vcf.gz GAN_D.vcf
 
 pickle_to_vcf.py RBM_A1201.pickle ../sources/AGBL4.vcf.gz RBM_A.vcf
 pickle_to_vcf.py RBM_B1201.pickle ../sources/AGBL4.vcf.gz RBM_B.vcf

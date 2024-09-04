@@ -3,6 +3,18 @@ def running(a):
     print("RUNNING: {}".format(a))
     os.system(a)
 
+running("convert_hapt_to_vcf_haplotypes.py ./805_SNP_1000G_real.hapt ./805_SNP.legend ./805_SNP_1000G_real_haplotypes.vcf")
+running("splitter.py 805_SNP_1000G_real_haplotypes.vcf 805_SNP_1000G_real_split_haplotypes1.vcf 805_SNP_1000G_real_split_haplotypes2.vcf")
+
+running("bgzip ./805_SNP_1000G_real_haplotypes.vcf")
+running("bgzip 805_SNP_1000G_real_split_haplotypes1.vcf")
+running("bgzip 805_SNP_1000G_real_split_haplotypes2.vcf")
+
+running("tabix ./805_SNP_1000G_real.vcf")
+running("tabix ./805_SNP_1000G_real_haplotypes.vcf")
+running("tabix 805_SNP_1000G_real_split_haplotypes1.vcf")
+running("tabix 805_SNP_1000G_real_split_haplotypes2.vcf")
+
 #the data_source and chromisome vcf files
 prepend = "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20220422_3202_phased_SNV_INDEL_SV/"
 chromisome_files = ["1kGP_high_coverage_Illumina.chr{}.filtered.SNV_INDEL_SV_phased_panel.vcf.gz".format(i) for i in range(1,23)]
@@ -46,6 +58,7 @@ for gene,data in genes.items():
   running(f"plink2 --vcf {gene}.vcf --maf 0.01 --hwe 1e-6 --rm-dup 'exclude-all' --recode vcf --out {gene}.cleaned")
   running(f"gzip {gene}.cleaned.vcf")
   running(f"mv {gene}.cleaned.vcf.gz {gene}.vcf.gz")
+  running(f"splitter.py {gene}.vcf.gz {gene}_split1.vcf {gene}_split2.vcf")
 running(f"plink2 --vcf AGBL4.vcf.gz --maf 0.05 --rm-dup 'exclude-all' --recode vcf --out AGBL4.SMALLER")
 running(f"gzip AGBL4.SMALLER.vcf")
 
