@@ -13,7 +13,7 @@ MARKOV () {
     \time --format=%U --output=$2 MARK_run.py $1 dummy_output.pickle 1 --window_leng=30
 }
 GAN () {
-    \time --format=%U --output=$2 GAN_run.py $1 dummy_output 1 --dump_output_interval=30000 --epochs=300
+    \time --format=%U --output=$2 GAN_run.py $1 dummy_output 1 --dump_output_interval=20000 --epochs=20010
 }
 RBM () {
     \time --format=%U --output=$2 RBM_run.py $1 dummy_output 1 --dump_output_interval=30000 --gpu=True --ep_max=1200

@@ -18,9 +18,9 @@ MARKOV () {
     done
 }
 GAN () {
-    for bls in $(seq 500 100 800); do
-        GAN_run.py $1 gan 1000 --dump_output_interval=300 --epochs=310 --base_layer_size=$bls
-        pickle_to_vcf.py gan300.pickle $1 "GAN_${bls}.vcf"
+    for lm in $(seq 0.7 0.3 1.6); do
+        GAN_run.py $1 gan 1000 --dump_output_interval=20000 --epochs=20010 --layer_multiplier=$lm
+        pickle_to_vcf.py gan20000.pickle $1 "GAN_${lm}.vcf"
     done
 }
 RBM () {

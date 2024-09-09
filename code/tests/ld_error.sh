@@ -14,8 +14,8 @@ MARK () {
     MARK_run.py $1 $2 1000 --window_leng=30
 }
 GAN () {
-    GAN_run.py $1 gan 1000 --dump_output_interval=300 --epochs=310
-    pickle_to_vcf.py gan300.pickle $1 $2
+    GAN_run.py $1 gan 1000 --dump_output_interval=20000 --epochs=20010
+    pickle_to_vcf.py gan20000.pickle $1 $2
 }
 RBM () {
     RBM_run.py $1 rbm 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250
