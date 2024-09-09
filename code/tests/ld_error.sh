@@ -11,7 +11,7 @@ GENOMATOR () {
     genomator $1 $2 1000 1 1
 }
 MARK () {
-    MARK_run.py $1 $2 1000 --window_leng=30
+    MARK_run.py $1 $2 1000 --window_leng=10
 }
 GAN () {
     GAN_run.py $1 gan 1000 --dump_output_interval=20000 --epochs=20010
