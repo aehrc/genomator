@@ -1,6 +1,6 @@
 #!/bin/bash
 set -exuo pipefail
-INPUT_VCF_PREFIX=/data/805_SNP_1000G_real_split_
+INPUT_VCF_PREFIX=/data/805_SNP_1000G_real_split_haplotypes
 
 from_vcfshark () {
     vcfshark decompress "/data/vcfshark/attribute/${1}_${2}.vcfshark" $3

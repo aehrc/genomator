@@ -1,6 +1,6 @@
 #!/bin/bash
 set -exuo pipefail
-INPUT_VCF=/data/805_SNP_1000G_real.vcf
+INPUT_VCF=/data/805_SNP_1000G_real_haplotypes.vcf.gz
 
 from_vcfshark () {
     vcfshark decompress "/data/vcfshark/805/${2}/${1}.vcfshark" $3
@@ -14,15 +14,15 @@ MARK () {
 }
 GAN () {
     GAN_run.py $1 gan 1000 --dump_output_interval=20000 --epochs=20010
-    pickle_to_vcf.py gan20000.pickle $1 $2
+    pickle_to_vcf.py gan20000.pickle $1 $2 --ploidy=1
 }
 RBM () {
     RBM_run.py $1 rbm 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250
-    pickle_to_vcf.py rbm1201.pickle $1 $2
+    pickle_to_vcf.py rbm1201.pickle $1 $2 --ploidy=1
 }
 CRBM () {
     CRBM_run.py $1 crbm 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250
-    pickle_to_vcf.py crbm1201.pickle $1 $2
+    pickle_to_vcf.py crbm1201.pickle $1 $2 --ploidy=1
 }
 
 RESULTS_DIR=$1
