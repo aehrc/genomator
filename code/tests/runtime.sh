@@ -41,3 +41,5 @@ for alg in GENOMATOR MARKOV GAN RBM CRBM; do
         continue
     fi
 done
+
+runtime_produce_graph.py $RESULTS_FILE "${RESULTS_DIR}/runtime_graph.png"
