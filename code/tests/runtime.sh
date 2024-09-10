@@ -13,7 +13,7 @@ MARKOV () {
     \time --format=%U --output=$2 MARK_run.py $1 dummy_output.pickle 1 --window_leng=10
 }
 GAN () {
-    \time --format=%U --output=$2 GAN_run.py $1 dummy_output 1 --dump_output_interval=20000 --epochs=20010
+    \time --format=%U --output=$2 GAN_run.py $1 "dummy_output_GAN_${3}" 1 --dump_output_interval=20000 --epochs=20010
 }
 RBM () {
     \time --format=%U --output=$2 RBM_run.py $1 dummy_output 1 --dump_output_interval=30000 --gpu=True --ep_max=1200
@@ -32,7 +32,7 @@ for alg in GENOMATOR MARKOV GAN RBM CRBM; do
         for i in 100 400 1600 6400 25600 102400 409600 1638400 6553600 11757483; do
             input_vcf="${INPUT_FILE_PREFIX}${i}${INPUT_VCF_SUFFIX}"
             tar -xzf "${INPUT_VCF_DIR}${input_vcf}${TAR_SUFFIX}" --no-same-owner -O > $input_vcf
-            $alg $input_vcf $TEMP_RUNTIME_FILE
+            $alg $input_vcf $TEMP_RUNTIME_FILE $i
             echo -en "${alg}\t${i}\t" >> $RESULTS_FILE
             cat $TEMP_RUNTIME_FILE >> $RESULTS_FILE
             rm $input_vcf
