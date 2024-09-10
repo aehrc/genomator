@@ -111,8 +111,13 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
         if max_y_limit:
             plt.ylim(0,max_y_limit)
     lgnd = plt.legend(loc="upper right", scatterpoints=1, fontsize=10)
-    for i in range(len(compare_vcf_file)):
-        lgnd.legend_handles[i]._sizes = [30]
+    if 'legendHandles' in dir(lgnd):
+        for i in range(len(compare_vcf_file)):
+            lgnd.legendHandles[i]._sizes = [30]
+    else:
+        for i in range(len(compare_vcf_file)):
+            lgnd.legend_handles[i]._sizes = [30]
+
     plt.title(input_vcf_file.split("/")[-1].split("_")[0].split(".")[0].upper())
     plt.xlabel("Window size (kbases)")
     plt.ylabel("Average Square error")
