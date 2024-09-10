@@ -2,6 +2,8 @@
 #### Takes too long to run on Code Ocean
 set -exuo pipefail
 INPUT_VCF_PREFIX=/data/
+INPUT_VCF_SUFFIX=_split1.vcf
+COMPARE_VCF_SUFFIX=_split2.vcf
 
 from_vcfshark () {
     vcfshark decompress "/data/vcfshark/ld_error/${2}/${1}.vcfshark" $3
@@ -32,12 +34,13 @@ for gene in "AGBL4"; do
     out_dir="${RESULTS_DIR}/${gene}"
     mkdir $gene
     mkdir "${out_dir}"
-    input_vcf="${INPUT_VCF_PREFIX}${gene}.vcf.gz"
-    vcf_paths=($input_vcf)
+    base_vcf="${INPUT_VCF_PREFIX}${gene}"
+    compare_vcf="${base_vcf}${COMPARE_VCF_SUFFIX}"
+    vcf_paths=($compare_vcf)
     for alg in GENOMATOR MARK GAN RBM CRBM; do
         vcf="${gene}/${alg}.vcf"
         if [[ "${alg}" == "GENOMATOR" ]]; then
-            $alg "$input_vcf" "$vcf"
+            $alg "${base_vcf}${INPUT_VCF_SUFFIX}" "$vcf"
         else
             from_vcfshark $alg $gene "$vcf"
         fi
@@ -45,20 +48,20 @@ for gene in "AGBL4"; do
     done
     if [[ $gene == "CCSER1" ]]; then
         # To keep all the data in the image
-        y_lim=0.035
+        y_lim=0.055
     else
-        y_lim=0.025
+        y_lim=0.045
     fi
     cd $out_dir
     echo results > results.txt
     ld_window_analysis.py "${vcf_paths[@]}" --max_offset=500 --max_y_limit=$y_lim --chunk_size=15 --output_image_file=LD_window.png >> results.txt
-    ld11.py $input_vcf >> results.txt
+    ld11.py $compare_vcf >> results.txt
     echo average >> results.txt
     ld10.py "${vcf_paths[@]}" >> results.txt
     echo correlation >> results.txt
     for vcf_file in "${vcf_paths[@]}"; do
-        if [[ $vcf_file != $input_vcf ]]; then
-            get_correlation.py $input_vcf $vcf_file >> results.txt
+        if [[ $vcf_file != $compare_vcf ]]; then
+            get_correlation.py $compare_vcf $vcf_file >> results.txt
         fi
     done
     cd ../..
