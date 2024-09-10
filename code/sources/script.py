@@ -5,9 +5,21 @@ def running(a):
     print("RUNNING: {}".format(a))
     os.system(a)
 
-#the data_source and chromisome vcf files
+running("convert_hapt_to_vcf_haplotypes.py ./805_SNP_1000G_real.hapt ./805_SNP.legend ./805_SNP_1000G_real_haplotypes.vcf")
+running("splitter.py 805_SNP_1000G_real_haplotypes.vcf 805_SNP_1000G_real_split_haplotypes1.vcf 805_SNP_1000G_real_split_haplotypes2.vcf")
+
+running("bgzip ./805_SNP_1000G_real_haplotypes.vcf")
+running("bgzip 805_SNP_1000G_real_split_haplotypes1.vcf")
+running("bgzip 805_SNP_1000G_real_split_haplotypes2.vcf")
+
+running("tabix ./805_SNP_1000G_real.vcf")
+running("tabix ./805_SNP_1000G_real_haplotypes.vcf")
+running("tabix 805_SNP_1000G_real_split_haplotypes1.vcf")
+running("tabix 805_SNP_1000G_real_split_haplotypes2.vcf")
+
+#the data_source and chromosome vcf files
 prepend = "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20220422_3202_phased_SNV_INDEL_SV/"
-chromisome_files = ["1kGP_high_coverage_Illumina.chr{}.filtered.SNV_INDEL_SV_phased_panel.vcf.gz".format(i) for i in range(1,23)]
+chromosome_files = ["1kGP_high_coverage_Illumina.chr{}.filtered.SNV_INDEL_SV_phased_panel.vcf.gz".format(i) for i in range(1,23)]
 
 #NOTE: these are just the first 400 samples in the files
 selected_samples = ["HG{:05d}".format(s) for s in [96, 97, 99, 100, 101, 102, 103, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
@@ -32,7 +44,7 @@ selected_samples = ["HG{:05d}".format(s) for s in [96, 97, 99, 100, 101, 102, 10
  956, 978, 982, 1028, 1029, 1031, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1058, 1060, 1061]]
 
 print("Downloading 1000 genomes data")
-for c in chromisome_files:
+for c in chromosome_files:
   running(f"wget {prepend+c}")
   running(f"wget {prepend+c}.tbi")
 
@@ -44,23 +56,24 @@ genes = {
 }
 print("Splitting out genes")
 for gene,data in genes.items():
-  running(f"bcftools view -r chr{data[0]}:{data[1]}-{data[2]} {chromisome_files[data[0]-1]} > {gene}.vcf")
+  running(f"bcftools view -r chr{data[0]}:{data[1]}-{data[2]} {chromosome_files[data[0]-1]} > {gene}.vcf")
   running(f"plink2 --vcf {gene}.vcf --maf 0.01 --hwe 1e-6 --rm-dup 'exclude-all' --recode vcf --out {gene}.cleaned")
   running(f"gzip {gene}.cleaned.vcf")
   running(f"mv {gene}.cleaned.vcf.gz {gene}.vcf.gz")
+  running(f"splitter.py {gene}.vcf.gz {gene}_split1.vcf {gene}_split2.vcf")
 running(f"plink2 --vcf AGBL4.vcf.gz --maf 0.05 --rm-dup 'exclude-all' --recode vcf --out AGBL4.SMALLER")
 running(f"gzip AGBL4.SMALLER.vcf")
 
 
 print("Compiling big data")
-for i,file in enumerate(chromisome_files):
-  print(f"Cleaning chromisome {i+1}")
+for i,file in enumerate(chromosome_files):
+  print(f"Cleaning chromosome {i+1}")
   running(f"bcftools view -s {','.join(selected_samples)} {file} > temp_CHROM{i+1}.vcf" )
   running(f"plink2 --vcf temp_CHROM{i+1}.vcf --maf 0.01 --hwe 1e-6 --rm-dup 'exclude-all' --recode vcf --out CHROM{i+1}")
   running(f"bgzip CHROM{i+1}.vcf")
   running(f"tabix CHROM{i+1}.vcf.gz")
 print("Merging human genome data")
-running(f"bcftools concat {' '.join(['CHROM'+str(i+1)+'.vcf.gz' for i in range(len(chromisome_files))])} -o chr_filtered_.vcf")
+running(f"bcftools concat {' '.join(['CHROM'+str(i+1)+'.vcf.gz' for i in range(len(chromosome_files))])} -o chr_filtered_.vcf")
 
 running(f"gzip chr_filtered_.vcf")
 print("Splitting big data into incremental parts")
@@ -72,6 +85,6 @@ for i in [100*4**j for j in range(9)]+[""]:
     running(f"vcf_to_pickle.py chr_filtered_{i}.vcf.gz chr_filtered_{i}.vcf.gz.pickle")
 
 print("Merging chrom 10 and 16")
-running(f"bcftools concat {chromisome_files[9]} {chromisome_files[15]} -o ALL.chr10_and_16.vcf")
+running(f"bcftools concat {chromosome_files[9]} {chromosome_files[15]} -o ALL.chr10_and_16.vcf")
 running(f"plink2 --vcf ALL.chr10_and_16.vcf --maf 0.01 --rm-dup 'exclude-all' --recode vcf --out ALL.chr10_and_16.cleaned")
 running("vcf_to_pickle.py ALL.chr10_and_16.cleaned.vcf ALL.chr10_and_16.cleaned.vcf.pickle")
