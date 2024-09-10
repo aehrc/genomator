@@ -58,6 +58,30 @@ def select_non_A_count_B(A,B):
 
 base_colours = ['r','b','g','k','m','c','k','y']
 markers = ['.','v','s','d','P','*','d','X']
+degrees =  [
+    "zerolet",
+    "singlet",
+    "doublet",
+    "triplet",
+    "quadruplet",
+    "quintuplet",
+    "sextuplet",
+    "septuplet",
+    "octuplet",
+    "nonuplet",
+    "decuplet",
+    "undecuplet",
+    "duodecuplet",
+    "tredecuplet",
+    "quattuordecuplet",
+    "quindecuplet",
+    "sexdecuplet",
+    "septendecuplet",
+    "octodecuplet",
+    "novemdecuplet",
+    "vigintuplet",
+]
+
 @click.command()
 @click.argument('input_vcf_files', nargs=-1, type=click.types.Path())
 @click.option('--trials', '-t', type=click.types.INT, default=10000)
@@ -113,8 +137,8 @@ def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
     #    lgnd.legendHandles[i]._sizes = [30]
     plt.yscale("log")
     plt.xscale("log")
-    plt.xlabel("Expectation of private quadruplet occuring in output")
-    plt.ylabel("Expectation of fictitious quadruplet occuring in output")
+    plt.xlabel(f"Expectation of private {degrees[degree]} occuring in output")
+    plt.ylabel(f"Expectation of fictitious {degrees[degree]} occuring in output")
     plt.savefig(output_image_file, bbox_inches='tight')
 
 if __name__ == '__main__':
