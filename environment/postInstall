@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+set -e
+
+python3.11 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+
+# wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2
+# tar -vxjf htslib-1.9.tar.bz2
+# cd htslib-1.9
+# make
+# make install
+# cd ..
+# wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2
+# tar -vxjf samtools-1.9.tar.bz2
+# cd samtools-1.9
+# make
+# make install
+# cd ..
+# wget https://github.com/samtools/bcftools/releases/download/1.9/bcftools-1.9.tar.bz2
+# tar -vxjf bcftools-1.9.tar.bz2
+# cd bcftools-1.9
+# make
+# make install
+# cd ..
+
+wget https://github.com/samtools/htslib/releases/download/1.19.1/htslib-1.19.1.tar.bz2
+tar -vxjf htslib-1.19.1.tar.bz2
+cd htslib-1.19.1
+make
+make install
+cd ..
+
+git clone https://github.com/refresh-bio/VCFShark.git
+cd VCFShark
+./install.sh 
+make
+make install
+cd ..
+
+mkdir plink
+cd plink
+wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20231211.zip
+unzip plink_linux_x86_64_20231211.zip
+cp plink /usr/bin/
+cd ..
+
+# git clone https://github.com/aehrc/genomator.git
+# cd genomator/experiment_tools/
+# pip install .
+pip install \
+    tqdm==4.66.4 \
+    tensorflow==2.16.1 \
+    keras==3.3.3 \
+    scikit-allel==1.3.8 \
+    torch==2.3.1 \
+    vcfpy==0.13.8 \
+    scipy==1.13.1 \
+    numpy==1.26.4 \
+    matplotlib==3.9.0 \
+    pandas==2.2.2 \
+    seaborn==0.13.2 \
+    POT==0.9.3 \
+    scikit-learn==1.5.0 \
+    click==8.1.7 \
+    cyvcf2==0.31.0 \
+    h5py==3.11.0 \
+    resample==1.9.0 \
+    python-sat==1.8.dev13 \
+    stopit==1.1.2
+
+# pip install tqdm==4.64.1 vcfpy==0.13.6 python-sat==1.8.dev13 click==8.1.3 cyvcf2==0.30.18 stopit==1.1.2

@@ -1,0 +1,34 @@
+metadata_version: 1
+name: Privacy-hardened and hallucination-resistant synthetic data generation with
+  logic-solvers
+description: "Capsule accompanying paper: Privacy-hardened and hallucination-resistant
+  synthetic data generation with logic-solvers.\nContaining analysis and generation
+  of results.\n\nCitations:\n\nThe data files are licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0).\nCopyright
+  (c) 2024 Commonwealth Scientific and Industrial Research Organisation (CSIRO) ABN
+  41 687 119 230.\n \nThe datafiles (with the exception of those 805 in their pathname)
+  are adapted from the phased panel of Byrska-Bishop et al. Cell, 2022 (PMID: 36055201)."
+authors:
+- name: Mark A Burgess
+  affiliations:
+  - name: CSIRO
+- name: Brendan Hosking
+  affiliations:
+  - name: CSIRO
+- name: Roc Reguant
+  affiliations:
+  - name: CSIRO
+- name: Anubhav Kaphle
+  affiliations:
+  - name: CSIRO
+- name: Mitchell J. O'Brien
+  affiliations:
+  - name: CSIRO
+- name: Letitia M.F. Sng
+  affiliations:
+  - name: CSIRO
+- name: Yatish Jain
+  affiliations:
+  - name: CSIRO
+- name: Denis C. Bauer
+  affiliations:
+  - name: CSIRO

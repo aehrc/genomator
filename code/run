@@ -1,0 +1,20 @@
+#!/bin/bash
+source /venv/bin/activate
+chmod +x bin/*
+cp --preserve bin/* /venv/bin/
+cd /venv/lib/python*/site-packages/
+cp -r /code/src/* ./
+cd /code
+
+RESULTS_DIR=test_results
+
+set -exuo pipefail
+for test_script in /code/tests/*.sh; do
+    chmod +x "$test_script"
+    test_dir=$(mktemp -d)
+    cd "$test_dir"
+    mkdir $RESULTS_DIR
+    $test_script $RESULTS_DIR
+    mv "${test_dir}/${RESULTS_DIR}" "/results/$(basename ${test_script%.sh})"
+    rm -rf "$test_dir"
+done
