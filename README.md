@@ -21,6 +21,34 @@ we note that the `run_me.sh` script file will take a LONG time to compute, and a
 ### Running without GPU
 In various scripts and python files in */experiment/* the flag **--gpu=True** this should be changed to **--gpu=False** which should facilitate running on systems without GPU.
 
+# Running with the genomator binary
+There are currently two ways to run these scripts with the genomator binary: using Code Ocean and using Docker.
+More information is available in the [binary branch README](https://github.com/aehrc/genomator/blob/binary/README.md).
+
+### Code Ocean
+Navigate to [https://codeocean.com/capsule/1806639](https://codeocean.com/capsule/1806639) and select "Reproducible Run". This may require making an account for Code Ocean. Please also note that the runtime for all the tests can be in excess of 4 hours.
+
+When the run is complete the resulting files will be in `results/` organised by test name.
+
+### Docker
+From the Code Ocean capsule (accessible at [https://codeocean.com/capsule/1806639](https://codeocean.com/capsule/1806639)), click on `Capsule` and then `Export...`. Opt to include the data. Extract the zip file and inspect `REPRODUCING.md` for detailed instructions on how to run the capsule in Docker.
+The simple instructions are below.
+
+To build the docker image:
+```shell
+cd environment && docker build . --tag genomator-tests; cd ..
+```
+To run the capsule:
+```shell
+docker run --platform linux/amd64 --rm --gpus all \
+  --workdir /code \
+  --volume "$PWD/data":/data \
+  --volume "$PWD/code":/code \
+  --volume "$PWD/results":/results \
+  genomator-tests bash run
+```
+The completed test files will be stored in the `results/` directory, organised by test name.
+
 # Experiment details
 
 ### 805
