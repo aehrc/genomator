@@ -12,12 +12,12 @@ while len(data)!=0:
     x = float(d[1].split(" ")[1])
     y = float(d[2].split(" ")[1])
     converted_data[m[0]].append((x,y))
+    print(d[0],x,y-x)
 
 base_colours = ['r','b','g','m','c','k','y']
 markers = ['.','v','s','P','*','d','X']
 plt.figure()
 for i,k in enumerate(sorted(converted_data.keys())):
-    print(i,k)
     xs,ys = list(zip(*converted_data[k]))
     ys = [ys[i] - xs[i] for i in range(len(ys))]
     plt.scatter(xs,
