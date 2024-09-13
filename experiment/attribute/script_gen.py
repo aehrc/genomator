@@ -1,7 +1,7 @@
 
 def genomator_run(f,i,z,postpend=""):
-    f.write(f"genomator ../sources/805_SNP_1000G_real_split_haplotypes1.vcf.gz GENOMATOR_A_{i}_{z}.vcf 2504 0 0 --sample_group_size={i} --exception_space=-{z}\n")
-    f.write(f"genomator ../sources/805_SNP_1000G_real_split_haplotypes2.vcf.gz GENOMATOR_B_{i}_{z}.vcf 2504 0 0 --sample_group_size={i} --exception_space=-{z}\n")
+    f.write(f"genomator ../sources/805_SNP_1000G_real_split_haplotypes1.vcf.gz GENOMATOR_A_{i}_{z}.vcf 2504 1 1 --sample_group_size={i} --exception_space=-{z}\n")
+    f.write(f"genomator ../sources/805_SNP_1000G_real_split_haplotypes2.vcf.gz GENOMATOR_B_{i}_{z}.vcf 2504 1 1 --sample_group_size={i} --exception_space=-{z}\n")
     f.write(f"bgzip GENOMATOR_A_{i}_{z}.vcf -f\n")
     f.write(f"bgzip GENOMATOR_B_{i}_{z}.vcf -f\n")
     f.write(f"tabix GENOMATOR_A_{i}_{z}.vcf.gz\n")

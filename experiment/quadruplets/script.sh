@@ -1,11 +1,11 @@
 
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_10_0.vcf 1000 0 0 --sample_group_size=10 --exception_space=0
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_15_1.vcf 1000 0 0 --sample_group_size=15 --exception_space=-1.0
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_20_2.vcf 1000 0 0 --sample_group_size=20 --exception_space=-2.0
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_25_3.vcf 1000 0 0 --sample_group_size=25 --exception_space=-3.0
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_30_4.vcf 1000 0 0 --sample_group_size=30 --exception_space=-4.0
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_35_5.vcf 1000 0 0 --sample_group_size=35 --exception_space=-5.0
-genomator ../sources/AGBL4.vcf.gz GENOMATOR_40_6.vcf 1000 0 0 --sample_group_size=40 --exception_space=-6.0
+genomator ../sources/AGBL4.vcf.gz GENOMATOR_10_0.vcf 1000 1 1 --sample_group_size=10 --exception_space=0 --max_restarts=-1
+genomator ../sources/AGBL4.vcf.gz GENOMATOR_15_1.vcf 1000 1 1 --sample_group_size=15 --exception_space=-1.0 --max_restarts=-1
+genomator ../sources/AGBL4.vcf.gz GENOMATOR_20_2.vcf 1000 1 1 --sample_group_size=20 --exception_space=-2.0 --max_restarts=-1
+genomator ../sources/AGBL4.vcf.gz GENOMATOR_25_3.vcf 1000 1 1 --sample_group_size=25 --exception_space=-3.0 --max_restarts=-1
+genomator ../sources/AGBL4.vcf.gz GENOMATOR_30_4.vcf 1000 1 1 --sample_group_size=30 --exception_space=-4.0 --max_restarts=-1
+genomator ../sources/AGBL4.vcf.gz GENOMATOR_35_5.vcf 1000 1 1 --sample_group_size=35 --exception_space=-5.0 --max_restarts=-1
+genomator ../sources/AGBL4.vcf.gz GENOMATOR_40_6.vcf 1000 1 1 --sample_group_size=40 --exception_space=-6.0 --max_restarts=-1
 
 stochastic_sanity_checker.py  ../sources/AGBL4.vcf.gz GENOMATOR_10_0.vcf
 stochastic_sanity_checker.py  ../sources/AGBL4.vcf.gz GENOMATOR_15_1.vcf
