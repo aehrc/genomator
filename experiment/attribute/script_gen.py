@@ -59,10 +59,10 @@ def gan_run(f,m):
 
 with open("experiment_script.sh","w") as f:
     f.write("rm results.txt\n")
-    i_range = list(range(15,50,5))+list(range(50,100,10))+list(range(100,200,20))+list(range(200,401,40))
+    i_range = list(range(15,50,5))+list(range(50,100,10))+list(range(100,200,20))+list(range(200,301,40))
     for i,z in [(i,(i-10)//5) for i in i_range]:
         genomator_run(f,i,z,"")
-    for i in range(2,51,2):
+    for i in range(2,23,2):
         mark_run(f,i)
     for nh in range(100,2100,100):
         for lr in [0.01,0.005]:
