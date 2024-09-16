@@ -58,3 +58,16 @@ The 'reverse' experiment runs Genomator and uses Reverse Genomator to detect the
 ### runtimes
 The 'runtimes' experiment calls each of the methods on iteratively larger portions of the dataset of the human genome, up until the full 22 chromosomes. Output should show how long each call took to succeed (or fail).
 
+## Troubleshooting
+
+###  Package version not found
+
+During the `docker build` step, some versions of packages may no longer be available, leading to an error like:
+
+`E: Version '3.16.3-1ubuntu1.20.04.1' for 'cmake' was not found`
+
+Where the version and package may be different.
+This is due to package repositories dropping support for old versions of packages.
+While it is desirable for the package versions to be as close to the originals as possible, newer versions are acceptible in this case.
+To use the newer packages edit `environment/Dockerfile` and change the package version to include a wildcard, e.g. `cmake=3.16.\* \` or `cmake=3.\* \`.
+This can also be accomplished in Code Ocean by editing the version of the package through the environment GUI, in this case changing it to something like `3.16.*` or `3.*`.
