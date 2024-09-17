@@ -2,8 +2,8 @@
 #### Takes too long to run on Code Ocean
 set -exuo pipefail
 INPUT_VCF_PREFIX=/data/
-INPUT_VCF_SUFFIX=_split1.vcf
-COMPARE_VCF_SUFFIX=_split2.vcf
+INPUT_VCF_SUFFIX=_split1.vcf.gz
+COMPARE_VCF_SUFFIX=_split2.vcf.gz
 
 from_vcfshark () {
     vcfshark decompress "/data/vcfshark/ld_error/${2}/${1}.vcfshark" $3
