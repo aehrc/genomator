@@ -82,4 +82,5 @@ for alg in GENOMATOR MARK GAN RBM CRBM; do
     done
 done
 
-cat "${result_file}" > attribute_process.py
+cat "${result_file}" > attribute_process.py > "${RESULTS_DIR}/results_raw.tsv"
+cat "${result_file}" > attribute_find_nearest_zero.py > "${RESULTS_DIR}/results_closest.tsv"

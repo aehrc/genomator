@@ -7,17 +7,19 @@ import sys
 reader = csv.reader(sys.stdin, delimiter='\t')
 next(reader)  # Skip header
 converted_data = defaultdict(list)
-for method_id, median_x, median_y in reader:
+print(f"method\tin-data distance\tout-data distance minus in-data distance")
+for method_id, median_x_str, median_y_str in reader:
     base_method = method_id.split("_")[0]
-    converted_data[base_method].append((float(median_x),float(median_y)))
+    median_x = float(median_x_str)
+    difference = float(median_y_str) - median_x
+    converted_data[base_method].append((median_x, difference))
+    print(f"{method_id}\t{median_x}\t{difference}")
 
 base_colours = ['r','b','g','m','c','k','y']
 markers = ['.','v','s','P','*','d','X']
 plt.figure()
 for i,k in enumerate(sorted(converted_data.keys())):
-    print(i,k)
     xs,ys = list(zip(*converted_data[k]))
-    ys = [ys[i] - xs[i] for i in range(len(ys))]
     plt.scatter(xs,
             ys,
             s=14,
