@@ -1,0 +1,175 @@
+#1. The VCFs of chromosomes 10 and 16 & metadata were downloaded from the 1000 Genomes Project to be used as the ancestry reference set
+
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz
+
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz
+
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/working/20130606_sample_info/20130606_g1k.ped
+
+#2. The hg19 reference genome was downloaded to ensure that variants in the 1000 Genomes Project was left-aligned.
+
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/human_g1k_v37.fasta.gz ;
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/human_g1k_v37.fasta.fai ;
+gunzip human_g1k_v37.fasta.gz 
+
+#3. bcftools was used to normalise multi-allelic calls, ensured that variants were left-aligned to the reference 
+genome, IDs were set to CHROM:POS:REF:ALT (rather than the sometimes non-unique rsID), and duplicated variants were removed. 
+
+bcftools norm -m-any --check-ref w -f human_g1k_v37.fasta.gz ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz | bcftools annotate -x ID -I + '%CHROM:%POS:%REF:%ALT' | bcftools norm -Ob --rm-dup both > ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.bcf
+
+bcftools norm -m-any --check-ref w -f human_g1k_v37.fasta.gz ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz | bcftools annotate -x ID -I + '%CHROM:%POS:%REF:%ALT' | bcftools norm -Ob --rm-dup both > ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.bcf
+
+#4. PLINK to convert BCF files to PLINK format for easy LD pruning
+## --vcf-idspace-to: to ensure that spaces in sample ID are converted to '_'
+## --const-fid: to convert sample IDS to within-family IDs while setting all family IDs to '0'
+## --keep-allele-order: ensures that REF/ALT are kept as A1/A2
+## --allow-extr-chr 0
+plink --bcf ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.bcf --vcf-idspace-to _ --const-fid --keep-allele-order --allow-extra-chr --make-bed --out ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes
+
+plink --bcf ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.bcf --vcf-idspace-to _ --const-fid --keep-allele-order --allow-extra-chr --make-bed --out ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes
+
+#5. PLINK to prune variants in high LD
+## --maf 0.10: keep variants with MAF > 10%
+## --indep 50 5 1.5: Take 50 variants at one time and shift window by 5 variants and variance inflation factor of 1.5 to filter out variants within the window. 
+## --extract: to remove variants in approximate LE with each other (list generated from the --indep command).
+
+plink --bfile ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes --indep 50 5 1.5 --maf 0.10 --out ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.toprune
+
+plink --bfile ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes --extract ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.toprune --make-bed --out ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned
+
+plink --bfile ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes --indep 50 5 1.5 --maf 0.10 --out ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.toprune
+
+plink --bfile ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes --extract ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.toprune --make-bed --out ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned
+
+#6. PLINK to merge chr 10 and 16 
+plink --bfile ALL.chr10.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned --bmerge ALL.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned --out ALL.chr10.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned
+
+#7. PLINK2 to export PCs calculated from the merged and pruned chr 10 and 16 of the 1000 Genomes Project to project onto, along with the allele frequencies needed to calibrate the 'variance-standardise' operation. 
+plink2 --bfile ALL.chr10.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned --freq counts --out ALL.chr10.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned.pcs --pca allele-weights
+
+#8. PLINK2 to project genomator-generated VCFs onto previously calculated PCs from Step 7. 
+
+plink2 --vcf ALL_chr10_and_chr16_genomator_batch10.vcf.gz --set-all-var-ids @:#:/$r:/$a --score-col-nums 6-15 --score ALL.chr10.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned.pcs.eigenvec.allele 2 5 header-read no-mean-imputation variance-standardize --read-freq ALL.chr10.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned.pcs.acount --out ALL_chr10_and_16_genomator_batch10.1KGprojected --new-id-max-allele-len 218 
+
+##Note: Projected genomator PCs will be scaled a bit differently from the reference 1000 Genomes Project, and will require some manipulation to put both on the same scale (e.g., multiply/divide projected PCs by a multiple fo the square root of their eigenvalues). Also, projected genomator PCs will tend to be shrunk towards zero. 
+
+
+#9. Visualisation of PCA with projected genomator-generated samples in REF
+
+ped <- fread('20130606_g1k.ped')
+df2 <- fread('ALL.chr10.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned.pcs.eigenvec') %>%
+  left_join(ped %>% select(`Individual ID`, Population), by = c('IID' = 'Individual ID')) %>%
+  # mutate(Population = ifelse(is.na(Population), 'Genomator', Population)) %>%
+  mutate(SuperPopulation = ifelse(Population %in% c("ACB","ASW","ESN","GWD","LWK","MSL","YRI"), 'African',
+                                  ifelse(Population %in% c("CLM","MXL","PEL","PUR"), 'American', 
+                                         ifelse(Population %in% c("CDX","CHB","CHS","JPT","KHV"), 'East Asian', 
+                                                ifelse(Population %in% c("CEU","FIN","GBR","IBS","TSI"), "European",
+                                                       ifelse(Population %in% c("BEB","GIH","ITU","PJL","STU"), "South Asian", NA)))))) %>%
+  column_to_rownames('IID') %>% select(-1)
+df3 <- fread('genomator_output_chr1_and_16.1KGproject.sscore') %>% rename(IID = `#IID`)
+df4 <- fread('ALL.chr10.chr16.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.pruned.pcs.eigenval') %>% pull(V1)
+
+df5 <- df3 %>% rowwise() %>% mutate(PC1 = PC1_AVG/(-sqrt(df4[1])/2), PC2 = PC2_AVG/(-sqrt(df4[2])/2), PC3 = PC3_AVG/(-sqrt(df4[3])/2)) %>% mutate(SuperPopulation = 'Genomator') %>%
+  column_to_rownames('IID')
+
+df6 <- df2 %>% select(SuperPopulation, PC1, PC2, PC3) %>% bind_rows(df5 %>% select(SuperPopulation, PC1, PC2, PC3))
+
+# df <- df3 %>% mutate(SuperPopulation = 'Genomator') %>% rename(PC1 = PC1_AVG, PC2 = PC2_AVG) %>% bind_rows(df2 %>% select(PC1, PC2, SuperPopulation))
+# 
+
+g3 <- ggplot(df6, aes(x = PC1, y = PC2, col = as.factor(SuperPopulation), shape = as.factor(SuperPopulation))) + 
+  geom_point() +
+  theme_bw() + 
+  scale_colour_manual(values = c('#E55812', '#EDA507', '#643173', '#08415C', '#697A21', '#0A0A0A'), name = 'Super Population', 
+                      breaks = c('African', 'American', 'East Asian', 'European', 'South Asian', 'Genomator'),
+                      labels = c('African (AFR)', 'American (AMR)', 'East Asian (EAS)', 'European (EUR)', 'South Asian (SAS)', 'Genomator')) +
+  scale_shape_manual(values = c(16, 16, 16, 16, 16, 4), name = 'Super Population', breaks = c('African', 'American', 'East Asian', 'European', 'South Asian', 'Genomator'),
+                      labels = c('African (AFR)', 'American (AMR)', 'East Asian (EAS)', 'European (EUR)', 'South Asian (SAS)', 'Genomator')) + 
+  geom_vline(aes(xintercept = 0.0125), col = '#941B0C', linetype = 'dotted') +
+  geom_hline(aes(yintercept = -0.022), col = '#941B0C', linetype = 'dotted') +
+  geom_hline(aes(yintercept = 0.025), col = '#941B0C', linetype = 'dotted') 
+
+g4 <- ggplot(df6, aes(x = PC1, y = PC3, col = as.factor(SuperPopulation), shape = as.factor(SuperPopulation))) + 
+  geom_point() +
+  theme_bw() + 
+  scale_colour_manual(values = c('#E55812', '#EDA507', '#643173', '#08415C', '#697A21', '#0A0A0A'), name = 'Super Population', 
+                      breaks = c('African', 'American', 'East Asian', 'European', 'South Asian', 'Genomator'),
+                      labels = c('African (AFR)', 'American (AMR)', 'East Asian (EAS)', 'European (EUR)', 'South Asian (SAS)', 'Genomator')) +
+  scale_shape_manual(values = c(16, 16, 16, 16, 16, 4), name = 'Super Population', 
+                     breaks = c('African', 'American', 'East Asian', 'European', 'South Asian', 'Genomator'),
+                      labels = c('African (AFR)', 'American (AMR)', 'East Asian (EAS)', 'European (EUR)', 'South Asian (SAS)', 'Genomator'))  
+
+ggarrange(g3, g4, align = 'h', common.legend = T, legend = 'right', labels = c('A', 'B'))
+
+
+#10. Classifying genomator-generated samples based on visual clustering with 1000 Genomes Project on PCA plot (in R)
+
+gen.ethnicity <- df6 %>% rownames_to_column('ID') %>%
+  filter(grepl('GENERATED', ID)) %>%
+  mutate(PC.Population = ifelse(PC1 > 0.0125, 'African', 
+                                ifelse(PC1 < 0.0125 & PC2 < -0.022, 'East Asian', 
+                                       ifelse(PC1 < 0.0125 & PC2 > 0.025, 'European', 'Other'))))
+									   
+#11. Generating Supplementary Table 6 (in R)
+
+count(df2, SuperPopulation) %>% filter(SuperPopulation != 'Genomator') %>% mutate(Percentage = round(n/2504*100, 2)) %>% rename(`1KG` = n, `1KG (%)` = Percentage) %>%
+  add_row(SuperPopulation = 'Other', `1KG` = 347 + 489, `1KG (%)` = round((347+489)/2504*100, 2)) %>% filter(SuperPopulation %in% c('African', 'East Asian', 'European', 'Other')) %>%
+  left_join((gen.ethnicity %>% count(PC.Population) %>% mutate(`Genomator (%)` = round(n/10, 2)) %>% rename(Genomator = n)), by = c('SuperPopulation' = 'PC.Population')) %>% rename(Ethnicity = SuperPopulation) %>%
+  kable()
+  
+  
+#12. Generating Figure 6 (in R). 
+##Note. Minor allele frequencies were manually taken from the gnomAD website and hardcoded here. Similarly, minor allele frequencies of the pharmacogenetic SNPs of interest were extracted from the genomator-generated VCF and calculated before being hardcoded into the generation of the figure. 
+
+vkorc1 <- fread('genomator_output_chr1_and_16.pharmacogenetic.vcf', skip = 160) %>% filter(ID == 'rs9923231') %>% select(ID, starts_with('GENERATED')) %>%
+  t() %>% row_to_names(1) %>% as.data.frame %>% rownames_to_column('Sample') %>% left_join(gen.ethnicity %>% select(ID, PC.Population), by = c('Sample' = 'ID'))
+
+##Calculate MAF of rs9923231 for the three ethnicities
+vkorc1 %>% filter(PC.Population == 'East Asian') %>% count(rs9923231) %>% mutate(nA = ifelse(rs9923231 == '0|0', 0, ifelse(rs9923231 == '1|1', n*2, n*1))) %>% pull(nA) %>% sum/406
+vkorc1 %>% filter(PC.Population == 'African') %>% count(rs9923231) %>% mutate(nA = ifelse(rs9923231 == '0|0', 0, ifelse(rs9923231 == '1|1', n*2, n*1))) %>% pull(nA) %>% sum/474
+vkorc1 %>% filter(PC.Population == 'European') %>% count(rs9923231) %>% mutate(nA = ifelse(rs9923231 == '0|0', 0, ifelse(rs9923231 == '1|1', n*2, n*1))) %>% pull(nA) %>% sum/394
+									   
+cyp2c19 <- fread('genomator_output_chr1_and_16.pharmacogenetic.vcf', skip = 160) %>% filter(ID != 'rs9923231') %>% select(ID, starts_with('GENERATED')) %>%
+  t() %>% row_to_names(1) %>% as.data.frame %>% rownames_to_column('Sample') %>% left_join(gen.ethnicity %>% select(ID, PC.Population), by = c('Sample' = 'ID'))
+  
+##Calculate MAF of rs4244285 for the three ethnicities
+cyp2c19 %>% filter(PC.Population == 'East Asian') %>% count(rs4244285) %>% mutate(nA = ifelse(rs4244285 == '0|0', 0, ifelse(rs4244285 == '1|1', n*2, n*1))) %>% pull(nA) %>% sum/406
+cyp2c19 %>% filter(PC.Population == 'African') %>% count(rs4244285) %>% mutate(nA = ifelse(rs4244285 == '0|0', 0, ifelse(rs4244285 == '1|1', n*2, n*1))) %>% pull(nA) %>% sum/474
+cyp2c19 %>% filter(PC.Population == 'European') %>% count(rs4244285) %>% mutate(nA = ifelse(rs4244285 == '0|0', 0, ifelse(rs4244285 == '1|1', n*2, n*1))) %>% pull(nA) %>% sum/394
+
+##Calculate MAF of rs4986893 for the three ethnicities
+cyp2c19 %>% filter(PC.Population == 'East Asian') %>% count(rs4986893) %>% mutate(nA = ifelse(rs4986893 == '0|0', 0, ifelse(rs4986893 == '1|1', n*2, n*1))) %>% pull(nA) %>% sum/406
+cyp2c19 %>% filter(PC.Population == 'African') %>% count(rs4986893) %>% mutate(nA = ifelse(rs4986893 == '0|0', 0, ifelse(rs4986893 == '1|1', n*2, n*1))) %>% pull(nA) %>% sum/474
+cyp2c19 %>% filter(PC.Population == 'European') %>% count(rs4986893) %>% mutate(nA = ifelse(rs4986893 == '0|0', 0, ifelse(rs4986893 == '1|1', n*2, n*1))) %>% pull(nA) %>% sum/394
+
+
+df <- data.frame(Gene = c(rep('VKORC1 (rs9923231)', 12), rep('CYP2C19*2 (rs4244285)', 12), rep('CYP2C19*3 (rs4986893)', 12)),
+                 Source = c(rep(rep(c('Genomator', '1KG', 'HGDP', 'gnomADv4'), 3), 3)),
+                 Population = c(rep(rep(c('AFR', 'EAS', 'EUR'), each = 4), 3)), 
+                 y = c(9.07, 4.9, 4.0, 9.97, 
+                       87.93, 88.48, 90.18, 89.17,
+                       41.37, 38.16, 50.99, 37.79,
+                       
+                       27.00, 16.65, 11.73, 17.84,
+                       33.74,31.31, 27.63, 30.36,
+                       18.02, 14.29, 17.11, 14.62,
+                       
+                       0.21, 0.16, 1.01, 0.045,
+                       9.85, 5.35, 5.91, 8.87,
+                       0, 0, 0.33, 0.01))
+
+
+ggplot(data = df, aes(x = Population, y = y)) + 
+  geom_point(aes(colour = Source)) +
+  geom_line(aes(group = Source, colour = Source)) +
+  facet_grid(. ~ Gene) +
+  theme_bw() +
+  labs(x = '\nPopulation', y = '') + 
+  scale_colour_manual(name = 'Data Source', values = c('#58A4DA', '#0A0A0A', '#99AA38', '#7F2CCB', '#F5A300'))
+  
+
+
+
+
+								   
+									   
