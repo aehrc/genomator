@@ -59,6 +59,8 @@ for gene,data in genes.items():
   running(f"gzip {gene}.cleaned.vcf")
   running(f"mv {gene}.cleaned.vcf.gz {gene}.vcf.gz")
   running(f"splitter.py {gene}.vcf.gz {gene}_split1.vcf {gene}_split2.vcf")
+  running(f"bgzip {gene}_split1.vcf")
+  running(f"bgzip {gene}_split2.vcf")
 running(f"plink2 --vcf AGBL4.vcf.gz --maf 0.05 --rm-dup 'exclude-all' --recode vcf --out AGBL4.SMALLER")
 running(f"gzip AGBL4.SMALLER.vcf")
 
