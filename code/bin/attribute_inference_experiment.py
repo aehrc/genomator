@@ -20,6 +20,7 @@ def get_min_dist(x, dataset):
 @click.argument('output_vcf_file1', type=click.types.Path())
 @click.argument('output_vcf_file2', type=click.types.Path())
 @click.option('--sample_size', '-s', type=click.INT, default=None)
+@click.option('--silent', type=click.BOOL, default=False)
 def attribute_experiment(original_vcf_file1, original_vcf_file2, output_vcf_file1, output_vcf_file2, sample_size, silent):
     original1, _ = parse_VCF_to_genome_strings(original_vcf_file1, silent=silent)
     original2, _ = parse_VCF_to_genome_strings(original_vcf_file2, silent=silent)
