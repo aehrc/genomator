@@ -10,7 +10,7 @@ from_vcfshark () {
 
 GENOMATOR () {
     for sgs in $(seq 10 5 40); do
-        es=$(((i-10)/5))
+        es=$(((sgs-10)/5))
         genomator $1 "GENOMATOR_${sgs}_${es}.vcf" 1000 1 1 --sample_group_size="${sgs}" --exception_space="-${es}" --max_restarts=-1
     done
 }
