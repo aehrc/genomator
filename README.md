@@ -1,32 +1,8 @@
-# Experiment Scripts for Genomator Paper
-
-This is the repository accompanying the publication of the Genomator paper, in this repository there is the experimental procedures that should reproduce the results featured in that paper.
-To execute these procedures, the python package in directory "experiment_tools" should be installed in a python environment. this package installation should install a range of requisite python libraries, and these libraries should work particularly on a system which has a GPU (or otherwise GPU functionality can be disabled, as detailed in following sections) and a system capable of supporting pytorch and tensorflow system libraries.
-
-In addition to python libraries a particular set of system utilities should be accessible via the script files. particularly:
-
- - bcftools (including utility 'bcftools' and 'bgzip' command utilities)
- - plink2
- - wget
-
-Once these system utilities and tools are installed (the python package 'experiment_tools' with pytorch and tensorflow system, and utilities bcftools&plink&wget) then a single script should be run:
-
-    /experiment/run_me.sh
-
-This script runs the */experiment/sources/script.py* file, which downloads and processes all source data, and then scans all subdirectories of */experiment/** for any and all files */script.sh* and runs them.
-Each of these */script.sh* files contains the code to execute a respective experiment.
-And the results for each experiment should be contained in those corresponding subdirectories.
-we note that the `run_me.sh` script file will take a LONG time to compute, and alternatively to running that script any specific experiment can be run by executing the `script.sh` file in the desired experiment folder (assuming the `/experiment/sources/script.py` has successfully downloaded and formatted the input datasets to these experiments first)
-
-### Running without GPU
-In various scripts and python files in */experiment/* the flag **--gpu=True** this should be changed to **--gpu=False** which should facilitate running on systems without GPU.
-
-# Running with the genomator binary
-There are currently two ways to run these scripts with the genomator binary: using Code Ocean and using Docker.
-More information is available in the [binary branch README](https://github.com/aehrc/genomator/blob/binary/README.md).
+# Genomator Tests
+This repository is used to generate the figures and tables used in the paper "Privacy-hardened and hallucination-resistant synthetic data generation with logic-solvers". There are currently two ways to run these scripts, using Code Ocean and using Docker.
 
 ### Code Ocean
-Navigate to [https://codeocean.com/capsule/1806639](https://codeocean.com/capsule/1806639) and select "Reproducible Run". This may require making an account for Code Ocean. Please also note that the runtime for all the tests can be in excess of 4 hours.
+Navigate to [https://codeocean.com/capsule/1806639](https://codeocean.com/capsule/1806639) and select "Reproducible Run". This may require making an account for Code Ocean. Please also note that the runtime for all the tests can be in excess of 4 hours. 
 
 When the run is complete the resulting files will be in `results/` organised by test name.
 
@@ -49,29 +25,49 @@ docker run --platform linux/amd64 --rm --gpus all \
 ```
 The completed test files will be stored in the `results/` directory, organised by test name.
 
-# Experiment details
+## Customising the tests
+If skipping a particular test is desired, simply edit that test name (in `code/tests`) to change the suffix from `.sh` to something else. Otherwise the main run script `code/run` can be edited to customise which tests are to be run (for example by specifying a particular test in the for loop or using a continue in the loop if the test is not desired).
+
+For performance reasons, the alternative methods have had their results precomputed and added to the `data/vcfshark` directory. If real-time execution of the alternative methods is desired, edit the relevant script (e.g. `code/tests/attribute.sh`) at the algorithm selection location. This will be a block beginning with something like `if [[ "${alg}" == "GENOMATOR" ]]; then`.
+
+In addition, the source data has been bundled with the Code Ocean capsule. This source data was generated using`code/sources/script.py`.
+
+## Experiment details
 
 ### 805
-The 805 experiment contains experimental code to reproduce V-shaped PCAs associated with 805 SNP data, including calculating wasserstein distance on the PCA for each of the methods. in each of the subfolders 1-10 should be PNG images visualsing these PCA images, as well as various .txt files containing the wasserstein distances.
-The information collating the wasserstein distances is collated by running the `/experiment/805/analyse_pca.sh` script
+The 805 experiment contains experimental code to reproduce V-shaped PCAs associated with 805 SNP data, including calculating wasserstein distance on the PCA for each of the methods.
 
 ### attribute
-the 'attribute' experiment contains the execution code to produce data associated with how accurate the synthetic data produced by each method matches against its source vs a similar dataset - to produce a measure of privacy. The results of this experiment are stored in the */results.txt* file
+The 'attribute' experiment contains the execution code to produce data associated with how accurate the synthetic data produced by each method matches against its source vs a similar dataset - to produce a measure of privacy.
 
 ### ld
-the 'ld' experiment produces pictures showing how well each method reproduces the LD structure on the AGBL4 gene, the LD scores between the first 2000 SNPs in the source AGBL4 dataset, and that reproduced in the output from each of the methods are produced as *.png* files in this directory.
+The 'ld' experiment produces pictures showing how well each method reproduces the LD structure on the AGBL4 gene and the LD scores between the first 2000 SNPs in the source AGBL4 dataset.
 
 ### ld_error
-the 'ld_error' experiment contains 4 subfolders for each of the genes considered in the paper, each sub-experiment computes 1000 synthetic genomes from each method and gene, and computes the square error in LD reproduction across a range of genome window sizes, output from these experiments is graphs in *.png* files.
+The 'ld_error' experiment contains 4 subfolders for each of the genes considered in the paper, each sub-experiment computes 1000 synthetic genomes from each method and gene, and computes the square error in LD reproduction across a range of genome window sizes, producing graphs as output.
 
 ### pharmacogenetic
-the 'pharmacogenetic' experiment computes 1000 synthetic sets of chromosomes 10&16 with genomator. in this directory there is information about how to perform analysis with these data to extract relevent pharamacogenetic SNP analysis across ethnicities via PCA analysis.
+The 'pharmacogenetic' experiment computes 1000 synthetic sets of chromosomes 10&16 with genomator. in this directory there is information about how to perform analysis with these data to extract relevent pharamacogenetic SNP analysis across ethnicities via PCA analysis.
 
 ### quadruplets
-the 'quadruplets' experiment contains code to interrogate how many private vs fictitious SNP quadruplets are generated from each of the methods on the AGBL4 gene dataset. Output from this experiment is contained in a *.png* graph and in *results.txt* file.
+The 'quadruplets' experiment contains code to interrogate how many private vs fictitious SNP quadruplets and septuplets are generated from each of the methods on the AGBL4 gene dataset.
 
 ### reverse
-the 'reverse' experiment contains script to run genomator and use reverse genomator to detect the number of privacy-exposed instances. the results are generated and stored in the */results* subdirectory and therein a *.png* file shoud contain the experiment results graph.
+The 'reverse' experiment runs Genomator and uses Reverse Genomator to detect the number of privacy-exposed instances. This test is too large for Code Ocean and is omitted from the regular script.
 
 ### runtimes
-the 'runtimes' experiment contains the experiment process of callilng each of the methods on iteratively larger portions of the dataset of the human genome, up till the full 22 chromosomes. output is a 'runtime_results.txt' file that should show how long each call took to succeed (or fail).
+The 'runtimes' experiment calls each of the methods on iteratively larger portions of the dataset of the human genome, up until the full 22 chromosomes. Output should show how long each call took to succeed (or fail).
+
+## Troubleshooting
+
+###  Package version not found
+
+During the `docker build` step, some versions of packages may no longer be available, leading to an error like:
+
+`E: Version '3.16.3-1ubuntu1.20.04.1' for 'cmake' was not found`
+
+Where the version and package may be different.
+This is due to package repositories dropping support for old versions of packages.
+While it is desirable for the package versions to be as close to the originals as possible, newer versions are acceptible in this case.
+To use the newer packages edit `environment/Dockerfile` and change the package version to include a wildcard, e.g. `cmake=3.16.\* \` or `cmake=3.\* \`.
+This can also be accomplished in Code Ocean by editing the version of the package through the environment GUI, in this case changing it to something like `3.16.*` or `3.*`.
