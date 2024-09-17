@@ -7,7 +7,7 @@ from_vcfshark () {
 }
 
 GENOMATOR_ITERATOR () {
-    for i in $(seq 10 5 45) $(seq 50 10 90) $(seq 100 20 180) $(seq 200 40 400); do
+    for i in $(seq 15 5 45) $(seq 50 10 90) $(seq 100 20 180) $(seq 200 40 280); do
         z=$(((i-10)/5))
         echo "${i}_${z}"
     done
@@ -19,7 +19,7 @@ GENOMATOR () {
 }
 
 MARKOV_ITERATOR () {
-    echo $(seq 2 2 50)
+    echo $(seq 2 2 22)
 MARKOV () {
     MARK_run.py $1 $2 2504 --window_leng="${3}"
 }
