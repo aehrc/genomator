@@ -55,5 +55,5 @@ for produced_file in *.vcf; do
 done
 
 cd $RESULTS_DIR
-rare_SNP_diagnosis8.py "${file_pairs[@]}" --degree=4 --trials=10000 --output_image_file=quadruplets_analysis.png > results1.txt
+rare_SNP_diagnosis8.py "${file_pairs[@]}" --degree=4 --trials=100000 --output_image_file=quadruplets_analysis.png > results1.txt
 rare_SNP_diagnosis8.py "${file_pairs[@]}" --degree=7 --trials=10000 --output_image_file=septuplets_analysis.png > results2.txt
