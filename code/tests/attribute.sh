@@ -15,19 +15,19 @@ GENOMATOR_ITERATOR () {
 GENOMATOR () {
     sgs="${3%_*}"  # first part of the string
     es="${3#*_}"  # second part of the string
-    genomator $1 $2 1000 0 0 --sample_group_size="${sgs}" --exception_space="-${es}"
+    genomator $1 $2 2504 0 0 --sample_group_size="${sgs}" --exception_space="-${es}"
 }
 
 MARKOV_ITERATOR () {
     echo $(seq 2 2 50)
 MARKOV () {
-    MARK_run.py $1 $2 1000 --window_leng="${3}"
+    MARK_run.py $1 $2 2504 --window_leng="${3}"
 }
 
 GAN_ITERATOR () {
     echo $(seq 0.1 0.3 4.9)
 GAN () {
-    GAN_run.py $1 gan 1000 --dump_output_interval=20000 --epochs=20010 --layer_multiplier="${3}"
+    GAN_run.py $1 gan 2504 --dump_output_interval=20000 --epochs=20010 --layer_multiplier="${3}"
     pickle_to_vcf.py gan20000.pickle $1 $2
 }
 
@@ -41,7 +41,7 @@ RBM_ITERATOR () {
 RBM () {
     nh="${3%_*}"  # first part of the string
     lr="${3#*_}"  # second part of the string
-    RBM_run.py $1 rbm 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh="${nh}" --lr="${lr}"
+    RBM_run.py $1 rbm 2504 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh="${nh}" --lr="${lr}"
     pickle_to_vcf.py rbm1201.pickle $1 $2
 }
 
@@ -49,7 +49,7 @@ CRBM_ITERATOR () {
     echo $(seq 100 100 2000)
 }
 CRBM () {
-    CRBM_run.py $1 crbm 1000 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh="${3}"
+    CRBM_run.py $1 crbm 2504 --dump_output_interval=1200 --gpu=True --ep_max=1250 --nh="${3}"
     pickle_to_vcf.py crbm1201.pickle $1 $2
 }
 
