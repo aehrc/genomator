@@ -15,7 +15,7 @@ GENOMATOR_ITERATOR () {
 GENOMATOR () {
     sgs="${3%_*}"  # first part of the string
     es="${3#*_}"  # second part of the string
-    genomator $1 $2 2504 0 0 --sample_group_size="${sgs}" --exception_space="-${es}"
+    genomator $1 $2 2504 1 1 --sample_group_size="${sgs}" --exception_space="-${es}"
 }
 
 MARKOV_ITERATOR () {
