@@ -18,9 +18,9 @@ GENOMATOR () {
     genomator $1 $2 1000 0 0 --sample_group_size="${sgs}" --exception_space="-${es}"
 }
 
-MARK_ITERATOR () {
+MARKOV_ITERATOR () {
     echo $(seq 2 2 50)
-MARK () {
+MARKOV () {
     MARK_run.py $1 $2 1000 --window_leng="${3}"
 }
 
@@ -68,7 +68,7 @@ run_attribute_inference () {
 RESULTS_DIR=$1
 result_file="${RESULTS_DIR}/attribute_inference_median_distance.tsv"
 echo -e "Method\tIn-Data Distance\tOut-Data Distance" > "$result_file"
-for alg in GENOMATOR MARK GAN RBM CRBM; do
+for alg in GENOMATOR MARKOV GAN RBM CRBM; do
     for args in $("${alg}_ITERATOR"); do
         for a in "A" "B"; do
             vcf="${alg}_${a}_${args}.vcf"
