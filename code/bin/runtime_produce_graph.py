@@ -7,15 +7,20 @@ import pandas as pd
 from matplotlib.ticker import FuncFormatter
 
 
+METHOD = "Method"
+SCALE = "SNPs"
+TIME = "Time(s)"
+
+
 base_colours = ['r','b','g','m','c','k','y'] 
 with open(sys.argv[1], "r") as f:
     data = pd.read_csv(f)
 data = data.fillna(11757483)
 
-methods = set(data["METHOD"].tolist())
+methods = set(data[METHOD].tolist())
 methods = sorted(list(methods))
-results = {m:(data[data['METHOD']==m]['TIME']*1.0/60).tolist() for m in methods}
-snps = reduce(lambda a,b: a|b, [set(data[data['METHOD']==m]['SCALE'].tolist()) for m in methods] )
+results = {m:(data[data[METHOD]==m][TIME]*1.0/60).tolist() for m in methods}
+snps = reduce(lambda a,b: a|b, [set(data[data[METHOD]==m][SCALE].tolist()) for m in methods] )
 snps = sorted(list(snps))
 snps = [s*1.0/1000 for s in snps]
 results = {m:(snps[:len(results[m])],results[m]) for m in results.keys()}
