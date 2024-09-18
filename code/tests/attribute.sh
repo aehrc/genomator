@@ -22,7 +22,7 @@ MARKOV_ITERATOR () {
     echo $(seq 2 2 22)
 }
 MARKOV () {
-    MARK_run.py $1 $2 2504 --window_leng="${3}"
+    MARKOV_run.py $1 $2 2504 --window_leng="${3}"
 }
 
 GAN_ITERATOR () {

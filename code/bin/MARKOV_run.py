@@ -13,7 +13,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import click
 from experiment_tools import parse_VCF_to_genome_strings, parse_genome_strings_to_VCF
 
-def main_MARK(inpt,markov_num,window_leng):
+def main_MARKOV(inpt,markov_num,window_leng):
     #markov_num  = #number of markov chain haplotypes to be generated
     #window_leng = #window length
 
@@ -87,13 +87,13 @@ def main_MARK(inpt,markov_num,window_leng):
 @click.argument('output_vcf_file', type=click.types.Path())
 @click.argument('number_of_genomes', type=click.INT, default=1)
 @click.option('--window_leng', type=click.INT, default=10)
-def MARK_run(input_vcf_file, output_vcf_file, number_of_genomes,window_leng):
+def MARKOV_run(input_vcf_file, output_vcf_file, number_of_genomes,window_leng):
     if input_vcf_file.split(".")[-1]=="pickle":
         with open(input_vcf_file,"rb") as f:
             s,ploidy = pickle.load(f)
     else:
         s,ploidy = parse_VCF_to_genome_strings(input_vcf_file)
-    ss = main_MARK(s, number_of_genomes,window_leng)
+    ss = main_MARKOV(s, number_of_genomes,window_leng)
     if output_vcf_file.split(".")[-1]=="pickle" or input_vcf_file.split(".")[-1]=="pickle":
         with open(output_vcf_file, "wb") as f:
             pickle.dump(ss,f)
@@ -101,4 +101,4 @@ def MARK_run(input_vcf_file, output_vcf_file, number_of_genomes,window_leng):
         parse_genome_strings_to_VCF(ss,input_vcf_file,output_vcf_file,ploidy)
 
 if __name__ == '__main__':
-    MARK_run()
+    MARKOV_run()

@@ -16,7 +16,7 @@ GENOMATOR () {
 }
 MARKOV () {
     for wl in $(seq 20 20 200); do
-        MARK_run.py $1 "MARKOV_${wl}.vcf" 1000 --window_leng=$wl
+        MARKOV_run.py $1 "MARKOV_${wl}.vcf" 1000 --window_leng=$wl
     done
 }
 GAN () {

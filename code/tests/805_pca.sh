@@ -9,8 +9,8 @@ from_vcfshark () {
 GENOMATOR () {
     genomator $1 $2 1000 1 1
 }
-MARK () {
-    MARK_run.py $1 $2 1000 --window_leng=10
+MARKOV () {
+    MARKOV_run.py $1 $2 1000 --window_leng=10
 }
 GAN () {
     GAN_run.py $1 gan 1000 --dump_output_interval=20000 --epochs=20010
@@ -26,7 +26,7 @@ CRBM () {
 }
 
 RESULTS_DIR=$1
-for alg in GENOMATOR MARK GAN RBM CRBM; do
+for alg in GENOMATOR MARKOV GAN RBM CRBM; do
     output="${RESULTS_DIR}/wasserstein_${alg}.tsv"
     echo -e "run\tavg\tstdev" > $output
     for i in {1..9}; do

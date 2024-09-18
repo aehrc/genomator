@@ -12,8 +12,8 @@ from_vcfshark () {
 GENOMATOR () {
     genomator $1 $2 1000 1 1
 }
-MARK () {
-    MARK_run.py $1 $2 1000 --window_leng=10
+MARKOV () {
+    MARKOV_run.py $1 $2 1000 --window_leng=10
 }
 GAN () {
     GAN_run.py $1 gan 1000 --dump_output_interval=20000 --epochs=20010
@@ -37,7 +37,7 @@ for gene in "AGBL4"; do
     base_vcf="${INPUT_VCF_PREFIX}${gene}"
     compare_vcf="${base_vcf}${COMPARE_VCF_SUFFIX}"
     vcf_paths=($compare_vcf)
-    for alg in GENOMATOR MARK GAN RBM CRBM; do
+    for alg in GENOMATOR MARKOV GAN RBM CRBM; do
         vcf="${gene}/${alg}.vcf"
         if [[ "${alg}" == "GENOMATOR" ]]; then
             $alg "${base_vcf}${INPUT_VCF_SUFFIX}" "$vcf"
