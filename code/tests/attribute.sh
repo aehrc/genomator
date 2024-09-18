@@ -74,7 +74,7 @@ for alg in GENOMATOR MARKOV GAN RBM CRBM; do
     for args in $("${alg}_ITERATOR"); do
         for a in "A" "B"; do
             vcf="${alg}_${a}_${args}.vcf"
-            if [[ "${alg}" == "GENOMATOR" ]]; then
+            if [[ "${alg}" == "None!" ]]; then
                 "${alg}" "${INPUT_VCF_PREFIX}${a}.vcf.gz" "${vcf}" "${args}"
             else
                 from_vcfshark "${vcf}"
