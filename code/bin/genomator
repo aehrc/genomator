@@ -98,14 +98,17 @@ def Genomator(
             max_restarts=max_restarts,
             dump_all_generated=dump_all_generated,
         )
-    output_extension = output_vcf_file.split(".")[-1]
-    if output_extension=="hapt":
-        parse_genome_strings_to_HAPT(s, output_vcf_file)
-    elif output_extension=="pickle" or input_extension=="pickle":
-        with open(output_vcf_file, "wb") as f:
-            pickle.dump(s,f)
+    if len(s)>0:
+        output_extension = output_vcf_file.split(".")[-1]
+        if output_extension=="hapt":
+            parse_genome_strings_to_HAPT(s, output_vcf_file)
+        elif output_extension=="pickle" or input_extension=="pickle":
+            with open(output_vcf_file, "wb") as f:
+                pickle.dump(s,f)
+        else:
+            parse_genome_strings_to_VCF(s, input_vcf_file, output_vcf_file, ploidy, del_info_field)
     else:
-        parse_genome_strings_to_VCF(s, input_vcf_file, output_vcf_file, ploidy, del_info_field)
+        print("no genomes outputted")
 
 if __name__ == '__main__':
 	Genomator()
