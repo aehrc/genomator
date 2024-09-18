@@ -47,6 +47,8 @@ SolverNames = sum([list(getattr(SolverNames,a)) for a in dir(SolverNames) if "_"
 @click.option('--difference_samples', type=click.INT, default=10000)
 @click.option('--looseness', type=click.FLOAT, default=0)
 @click.option('--freq_multiplier', type=click.FLOAT, default=0)
+@click.option('--max_restarts', type=click.INT, default=10)
+@click.option('--dump_all_generated', '-da', is_flag=True, help="dump generated individuals if max_restarts is hit")
 @docstring(description)
 def Genomator(
         input_vcf_file,
@@ -64,7 +66,9 @@ def Genomator(
         cluster_information_file,
         difference_samples,
         looseness,
-        freq_multiplier
+        freq_multiplier,
+        max_restarts,
+        dump_all_generated,
     ):
     input_extension = input_vcf_file.split(".")[-1]
     if input_extension=="hapt":
@@ -90,7 +94,9 @@ def Genomator(
             no_smart_clustering=no_smart_clustering,
             difference_samples=difference_samples,
             looseness=looseness,
-            freq_multiplier=freq_multiplier
+            freq_multiplier=freq_multiplier,
+            max_restarts=max_restarts,
+            dump_all_generated=dump_all_generated,
         )
     output_extension = output_vcf_file.split(".")[-1]
     if output_extension=="hapt":
