@@ -14,7 +14,7 @@ TIME = "Time(s)"
 
 base_colours = ['r','b','g','m','c','k','y'] 
 with open(sys.argv[1], "r") as f:
-    data = pd.read_csv(f)
+    data = pd.read_csv(f, sep="\t")
 data = data.fillna(11757483)
 
 methods = set(data[METHOD].tolist())
