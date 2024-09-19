@@ -45,7 +45,7 @@ CRBM () {
 RESULTS_DIR=$1
 
 for alg in GENOMATOR MARKOV GAN RBM CRBM; do
-    if [[ "${alg}" == "GENOMATOR" ]]; then
+    if [[ "${alg}" == "None!" ]]; then
         $alg "$INPUT_VCF"
     else
         from_vcfshark $alg
