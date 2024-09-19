@@ -20,7 +20,7 @@ MARKOV () {
     done
 }
 GAN () {
-    for lm in $(seq 0.7 0.3 1.6); do
+    for lm in $(seq 0.7 0.3 1.3); do
         GAN_run.py $1 gan 1000 --dump_output_interval=20000 --epochs=20010 --layer_multiplier=$lm
         pickle_to_vcf.py gan20000.pickle $1 "GAN_${lm}.vcf"
     done
