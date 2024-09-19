@@ -5,6 +5,10 @@ from random import shuffle
 from tqdm import tqdm
 import numpy as np
 
+
+MAX_SAMPLES = 100
+
+
 def get_min_dist(x, dataset):
     min_dist = float("inf")
     for d in dataset:
@@ -19,9 +23,10 @@ def get_min_dist(x, dataset):
 @click.argument('original_vcf_file2', type=click.types.Path())
 @click.argument('output_vcf_file1', type=click.types.Path())
 @click.argument('output_vcf_file2', type=click.types.Path())
+@click.option('--max_samples', '-m', type=click.INT, default=None)
 @click.option('--sample_size', '-s', type=click.INT, default=None)
 @click.option('--silent', type=click.BOOL, default=False)
-def attribute_experiment(original_vcf_file1, original_vcf_file2, output_vcf_file1, output_vcf_file2, sample_size, silent):
+def attribute_experiment(original_vcf_file1, original_vcf_file2, output_vcf_file1, output_vcf_file2, max_samples, sample_size, silent):
     original1, _ = parse_VCF_to_genome_strings(original_vcf_file1, silent=silent)
     original2, _ = parse_VCF_to_genome_strings(original_vcf_file2, silent=silent)
     output1, _ = parse_VCF_to_genome_strings(output_vcf_file1, silent=silent)
@@ -43,14 +48,22 @@ def attribute_experiment(original_vcf_file1, original_vcf_file2, output_vcf_file
     output2 = [np.array(bytearray(r),dtype=np.int8) for r in output2]
 
     results = []
+    count = 0
     for o in tqdm(original1) if not silent else original1:
         x = get_min_dist(o,output1)*1.0/len(o)
         y = get_min_dist(o,output2)*1.0/len(o)
         results.append((x,y))
+        count += 1
+        if max_samples and (count >= max_samples):
+            break
+    count = 0
     for o in tqdm(original2) if not silent else original2:
         x = get_min_dist(o,output2)*1.0/len(o)
         y = get_min_dist(o,output1)*1.0/len(o)
         results.append((x,y))
+        count += 1
+        if max_samples and (count >= max_samples):
+            break
 
     x_results = [x for x,y in results]
     y_results = [y for x,y in results]

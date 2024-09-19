@@ -64,7 +64,7 @@ run_attribute_inference () {
         files+=("${vcf}.gz")
     done
     echo -en "${1}_${2}\t" >> $result_file
-    attribute_inference_experiment.py "${files[@]}" --silent=True >> $result_file
+    attribute_inference_experiment.py "${files[@]}" --max_samples=100 --silent=True >> $result_file
 }
 
 RESULTS_DIR=$1
