@@ -26,7 +26,7 @@ MARKOV () {
 }
 
 GAN_ITERATOR () {
-    echo $(seq 0.1 0.3 4.9)
+    echo $(seq 0.1 0.3 4.6)
 }
 GAN () {
     GAN_run.py $1 gan 2504 --dump_output_interval=20000 --epochs=20010 --layer_multiplier="${3}"
