@@ -4,6 +4,10 @@ from collections import defaultdict
 import csv
 import sys
 
+
+RESULTS_DIRECTORY = sys.argv[1]
+
+
 reader = csv.reader(sys.stdin, delimiter='\t')
 next(reader)  # Skip header
 converted_data = defaultdict(list)
@@ -31,4 +35,4 @@ for i,k in enumerate(sorted(converted_data.keys())):
 lgnd = plt.legend(loc="upper right", scatterpoints=1, fontsize=10)
 plt.xlabel("In-data distance")
 plt.ylabel("Out-data distance minus In-data distance")
-plt.savefig("results.png", bbox_inches='tight')
+plt.savefig(f"{RESULTS_DIRECTORY}/results.png", bbox_inches='tight')
