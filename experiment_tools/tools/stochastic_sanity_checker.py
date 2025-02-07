@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from experiment_tools import *
+from genomator import *
 import click
 from random import randint,choice
 import numpy as np
@@ -12,13 +12,13 @@ from tqdm import tqdm
 @click.command()
 @click.argument('source_vcf_file', type=click.types.Path())
 @click.argument('synthetic_vcf_file', type=click.types.Path())
-@click.option('--diversity', type=click.INT, default=1)
+@click.option('--diversity', type=click.INT, default=0)
 @click.option('--trials', type=click.INT, default=500000)
-@click.option('--snp_load_limit', type=click.INT, default=10000)
-def checker(source_vcf_file,synthetic_vcf_file,diversity,trials,snp_load_limit):
+@click.option('--exception_space', type=click.INT, default=0)
+def checker(source_vcf_file,synthetic_vcf_file,diversity,trials,exception_space):
     print("SANITY CHECKER")
-    source = parse_VCF_to_genome_strings(source_vcf_file,snp_load_limit)[0]
-    synthetic = parse_VCF_to_genome_strings(synthetic_vcf_file,snp_load_limit)[0]
+    source = parse_VCF_to_genome_strings(source_vcf_file)[0]
+    synthetic = parse_VCF_to_genome_strings(synthetic_vcf_file)[0]
     if diversity>0:
         print("checking diversity")
         print("formatting")
@@ -42,7 +42,8 @@ def checker(source_vcf_file,synthetic_vcf_file,diversity,trials,snp_load_limit):
         selectB = choice(list(set(B)))
         invA = choice([True,False])
         invB = choice([True,False])
-        if False not in [((A[k]==selectA)^invA) or ((B[k]==selectB)^invB) for k in range(len(source))]:
+        pattern = [((A[k]==selectA)^invA) or ((B[k]==selectB)^invB) for k in range(len(source))]
+        if sum(pattern) >= len(pattern)-exception_space:
             assert False not in [((synthetic[k][i]==selectA)^invA) or ((synthetic[k][j]==selectB)^invB) for k in range(len(synthetic))], "indistinguishability check FAIL"
     print("checks succeeded")
             

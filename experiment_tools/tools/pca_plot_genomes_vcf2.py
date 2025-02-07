@@ -10,13 +10,13 @@ base_colours = ['r','b','g','m','c','w','k']
 
 def plot_PCA(sets,output_file):
     #combined_data = np.matrix(sum(sets,[]))
-    combined_data = np.matrix(sets[0])
-    combined_data = np.asarray(combined_data)
+    #combined_data = np.matrix(sets[0])
+    combined_data = np.asarray(sets[0])
     pca_transform = PCA(n_components=2,svd_solver='full').fit(combined_data)
     fig = plt.figure(figsize = (10,10))
     ax = fig.add_subplot(1,1,1)
     for i,s in enumerate(sets):
-        coordinates = pca_transform.transform(s)
+        coordinates = pca_transform.transform(np.asarray(s))
         xs = coordinates[:,0]
         ys = coordinates[:,1]
         ax.scatter(xs, ys,c=[base_colours[i] for j in range(len(xs))],s=50,alpha=0.2)
@@ -28,7 +28,7 @@ def plot_PCA(sets,output_file):
 def plot_pcas(input_vcf_file,output_file):
     assert len(input_vcf_file)>0, "need to supply vcf file inputs"
     genotypes = [parse_VCF_to_genome_strings(input_file)[0] for input_file in input_vcf_file]
-    genotypes = [[list(a) for a in s] for s in genotypes]
+    genotypes = [np.matrix([np.frombuffer(a,dtype=np.uint8) for a in s]) for s in genotypes]
     plot_PCA(genotypes,output_file)
 
 if __name__ == '__main__':
