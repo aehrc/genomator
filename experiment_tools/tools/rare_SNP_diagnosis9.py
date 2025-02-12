@@ -35,26 +35,27 @@ from itertools import product
 from matplotlib import pyplot as plt
 from collections import defaultdict
 
-# select one that is unique from A (if you can) and count how often it appears in B
-def select_unique_A_count_B(A,B):
+# select one that is unique from A (if you can) and return if it is unique in B
+def unique_A_check_unique_B(A,B):
     Aset = set(A)
     Adict = {a:A.count(a) for a in Aset}
     Aunique = [a for a,c in Adict.items() if c==1]
     if len(Aunique)==0:
         return None
-    Bcounts = [B.count(a) for a in Aunique]
+    Bcounts = [1 if B.count(a)==1 else 0 for a in Aunique]
     return Bcounts
 
-# select one that is not in A (if you can)
-def select_non_A_count_B(A,B):
-    elements = set(sum([list(a) for a in set(A+B)],[]))
-    possibilities = set(product(elements,repeat=len(A[0])))
+
+# select one that is unique from A (if you can) and return if it is not in B
+def unique_A_check_fictitious_B(A,B):
     Aset = set(A)
-    diffset = list(possibilities.difference(Aset))
-    if len(diffset) == 0:
+    Adict = {a:A.count(a) for a in Aset}
+    Aunique = [a for a,c in Adict.items() if c==1]
+    if len(Aunique)==0:
         return None
-    Bcounts = [B.count(a) for a in diffset]
+    Bcounts = [1 if B.count(a)==0 else 0 for a in Aunique]
     return Bcounts
+
 
 base_colours = ['r','b','g','k','m','c','k','y']
 markers = ['.','v','s','d','P','*','d','X']
@@ -80,34 +81,34 @@ degrees =  ["zerolet",
             "novemdecuplet",
             "vigintuplet"]
 
+
+def load_file(f,postpend=True):
+    extension = f.split(".")[-1]
+    if extension=="pickle":
+        with open(f,"rb") as f:
+            if postpend:
+                return pickle.load(f)[0]
+            else:
+                return pickle.load(f)
+    else:
+        return parse_VCF_to_genome_strings(f)[0]
+
 @click.command()
 @click.argument('input_vcf_files', nargs=-1, type=click.types.Path())
 @click.option('--trials', '-t', type=click.types.INT, default=10000)
 @click.option('--degree', '-d', type=click.types.INT, default=4)
 @click.option('--output_image_file', default="Rare_SNP_analysis_output.png")
 def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
-    input_vcf_files, dataset_files = input_vcf_files[1::2], input_vcf_files[::2]
-    if len(dataset_files)==0:
-        assert False, "you need to provide some dataset files"
-    ref_genomes = []
-    for f in input_vcf_files:
-        extension = f.split(".")[-1]
-        if extension=="pickle":
-            with open(f,"rb") as f:
-                ref_genomes.append(pickle.load(f)[0])
-        else:
-            ref_genomes.append(parse_VCF_to_genome_strings(f)[0])
-    datasets = []
-    for f in dataset_files:
-        extension = f.split(".")[-1]
-        if extension=="pickle":
-            with open(f,"rb") as f:
-                datasets.append(pickle.load(f))
-        else:
-            datasets.append(parse_VCF_to_genome_strings(f)[0])
-    transpose_ref_genomes = [list(map(tuple, zip(*r))) for r in ref_genomes]
+    input_vcf_files1, input_vcf_files2, dataset_files1, dataset_files2 = input_vcf_files[0::4], input_vcf_files[1::4], input_vcf_files[2::4], input_vcf_files[3::4]
+    assert False not in [len(input_vcf_files1)==len(l) for l in [input_vcf_files2, dataset_files1, dataset_files2]]
+    ref_genomes1 = [load_file(f,True) for f in input_vcf_files1]
+    ref_genomes2 = [load_file(f,True) for f in input_vcf_files2]
+    datasets1 = [load_file(f,False) for f in dataset_files1]
+    datasets2 = [load_file(f,False) for f in dataset_files2]
+    transpose_ref_genomes1 = [list(map(tuple, zip(*r))) for r in ref_genomes1]
+    transpose_ref_genomes2 = [list(map(tuple, zip(*r))) for r in ref_genomes2]
     labels = {}
-    for filename in dataset_files:
+    for filename in dataset_files1:
         labels[filename] = filename.split("/")[-1].split("_")[0]
     label_values = sorted(list(set(labels.values())))
     label_colours = {}
@@ -117,24 +118,33 @@ def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
         label_markers[k] = markers[label_values.index(labels[k])]
     reverse_labels = defaultdict(list)
     for k,v in labels.items():
-        reverse_labels[v].append(dataset_files.index(k))
+        reverse_labels[v].append(dataset_files1.index(k))
     plt.figure()
     for k in sorted(reverse_labels.keys()):
         xs = []
         ys = []
         for i in reverse_labels[k]:
-            d = datasets[i]
-            print(dataset_files[i])
-            td = list(map(tuple, zip(*d)))
-            unique_responses = export_xcorr(transpose_ref_genomes[i], td, degree, trials=trials, selector=select_unique_A_count_B)
-            zero_responses = export_xcorr(transpose_ref_genomes[i], td, degree, trials=trials, selector=select_non_A_count_B)
-            unique_responses = sum(unique_responses,[])
-            zero_responses = sum(zero_responses,[])
-            ratio_unique_responses_greater_than_zero = sum([a>0 for a in unique_responses])*1.0/len(unique_responses)
-            ratio_zero_responses_greater_than_zero = sum([a>0 for a in zero_responses])*1.0/len(zero_responses)
-            print(ratio_unique_responses_greater_than_zero,ratio_zero_responses_greater_than_zero)
-            xs.append(ratio_unique_responses_greater_than_zero)
-            ys.append(ratio_zero_responses_greater_than_zero)
+            d1 = datasets1[i]
+            d2 = datasets2[i]
+            print(dataset_files1[i])
+            td1 = list(map(tuple, zip(*d1)))
+            td2 = list(map(tuple, zip(*d2)))
+            
+            in_data_response = []
+            in_data_response += export_xcorr(td1, transpose_ref_genomes1[i], degree, trials=trials, selector=unique_A_check_unique_B)
+            in_data_response += export_xcorr(td2, transpose_ref_genomes2[i], degree, trials=trials, selector=unique_A_check_unique_B)
+            out_data_response = []
+            out_data_response += export_xcorr(td1, transpose_ref_genomes2[i], degree, trials=trials, selector=unique_A_check_unique_B)
+            out_data_response += export_xcorr(td2, transpose_ref_genomes1[i], degree, trials=trials, selector=unique_A_check_unique_B)
+
+            in_data_response = sum(in_data_response,[])
+            in_data_response = sum(in_data_response)/len(in_data_response)
+            out_data_response = sum(out_data_response,[])
+            out_data_response = sum(out_data_response)/len(out_data_response)
+
+            print(in_data_response,out_data_response,in_data_response-out_data_response)
+            xs.append(in_data_response)
+            ys.append(in_data_response-out_data_response)
         plt.scatter(xs, ys, s=14, c=[label_colours[dataset_files[i]]], label=labels[dataset_files[i]], alpha=0.8, marker=label_markers[dataset_files[i]])
     lgnd = plt.legend(loc="upper left", scatterpoints=1, fontsize=10)
     #if 'legendHandles' in dir(lgnd):
@@ -145,8 +155,8 @@ def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
     #        lgnd.legend_handles[i]._sizes = [30]
     plt.yscale("log")
     plt.xscale("log")
-    plt.xlabel("Expectation of private {} occuring in output".format(degrees[degree]))
-    plt.ylabel("Expectation of fictitious {} occuring in output".format(degrees[degree]))
+    plt.xlabel("Expectation of private {} occuring in input if unique in output".format(degrees[degree]))
+    plt.ylabel("Expectation of fictitious {} occuring in input if unique in output".format(degrees[degree]))
     plt.savefig(output_image_file, bbox_inches='tight')
 
 if __name__ == '__main__':
