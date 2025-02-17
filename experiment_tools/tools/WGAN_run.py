@@ -327,7 +327,7 @@ import tensorflow as tf
 from experiment_tools import parse_VCF_to_genome_strings, parse_genome_strings_to_VCF
 import pickle
 import time
-from models_65K import * #models_10K for 16383 zero padded SNP data
+#from models_65K import * #models_10K for 16383 zero padded SNP data
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -484,8 +484,8 @@ def main_WGAN(inpt,ag_size,epochs=10001,batch_size=96,dump_output_interval=-1,pl
             losses.append((round(c_loss.item(), 3), (round(g_loss.item(), 3))))
 
         ## Outputs for assessment at every "save_that" epoch
-        if (((dump_output_interval>0) and (e%dump_output_interval==0))
-            or ((dump_output_interval<=0) and (e==epochs-1))):
+        if (((dump_output_interval>0) and (epoch%dump_output_interval==0))
+            or ((dump_output_interval<=0) and (epoch==epochs-1))):
             #Create AGs
 
             netG.eval()
@@ -496,8 +496,8 @@ def main_WGAN(inpt,ag_size,epochs=10001,batch_size=96,dump_output_interval=-1,pl
             generated_genomes = generated_genomes.cpu().detach().numpy()
             generated_genomes[generated_genomes < 0] = 0
             generated_genomes = np.rint(generated_genomes)
-            ss = [bytes([int(aa) for aa in a]) for a in generated_genomes]
-            with open("{}{}.pickle".format(output_vcf_file,e), "wb") as f:
+            ss = [bytes([int(aa) for aa in a[0]]) for a in generated_genomes]
+            with open("{}{}.pickle".format(output_vcf_file,epoch), "wb") as f:
                 pickle.dump(ss,f)
             #parse_genome_strings_to_VCF(ss,input_vcf_file,"{}{}.vcf".format(output_vcf_file,e),ploidy)
             netG.train()
