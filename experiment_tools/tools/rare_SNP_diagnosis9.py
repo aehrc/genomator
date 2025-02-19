@@ -82,16 +82,20 @@ degrees =  ["zerolet",
             "vigintuplet"]
 
 
-def load_file(f,postpend=True):
-    extension = f.split(".")[-1]
-    if extension=="pickle":
-        with open(f,"rb") as f:
-            if postpend:
-                return pickle.load(f)[0]
-            else:
-                return pickle.load(f)
-    else:
-        return parse_VCF_to_genome_strings(f)[0]
+def load_file(f):
+    try:
+        extension = f.split(".")[-1]
+        if extension=="pickle":
+            with open(f,"rb") as f:
+                p = pickle.load(f)
+                if (len(p)==2) and isinstance(p[1],int):
+                    return p[0]
+                return p
+        else:
+            return parse_VCF_to_genome_strings(f)[0]
+    except Exception as e:
+        print(f"Failed to load file {f}")
+        raise e
 
 @click.command()
 @click.argument('input_vcf_files', nargs=-1, type=click.types.Path())
@@ -101,12 +105,6 @@ def load_file(f,postpend=True):
 def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
     input_vcf_files1, input_vcf_files2, dataset_files1, dataset_files2 = input_vcf_files[0::4], input_vcf_files[1::4], input_vcf_files[2::4], input_vcf_files[3::4]
     assert False not in [len(input_vcf_files1)==len(l) for l in [input_vcf_files2, dataset_files1, dataset_files2]]
-    ref_genomes1 = [load_file(f,True) for f in input_vcf_files1]
-    ref_genomes2 = [load_file(f,True) for f in input_vcf_files2]
-    datasets1 = [load_file(f,False) for f in dataset_files1]
-    datasets2 = [load_file(f,False) for f in dataset_files2]
-    transpose_ref_genomes1 = [list(map(tuple, zip(*r))) for r in ref_genomes1]
-    transpose_ref_genomes2 = [list(map(tuple, zip(*r))) for r in ref_genomes2]
     labels = {}
     for filename in dataset_files1:
         labels[filename] = filename.split("/")[-1].split("_")[0]
@@ -124,18 +122,23 @@ def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
         xs = []
         ys = []
         for i in reverse_labels[k]:
-            d1 = datasets1[i]
-            d2 = datasets2[i]
             print(dataset_files1[i])
-            td1 = list(map(tuple, zip(*d1)))
-            td2 = list(map(tuple, zip(*d2)))
+            d1 = load_file(dataset_files1[i])
+            d2 = load_file(dataset_files2[i])
+            d1 = list(map(tuple, zip(*d1)))
+            d2 = list(map(tuple, zip(*d2)))
+
+            transpose_ref_genome1 = load_file(input_vcf_files1[i])
+            transpose_ref_genome2 = load_file(input_vcf_files1[i])
+            transpose_ref_genome1 = list(map(tuple, zip(*ref_genome1)))
+            transpose_ref_genome2 = list(map(tuple, zip(*ref_genome2)))
             
             in_data_response = []
-            in_data_response += export_xcorr(td1, transpose_ref_genomes1[i], degree, trials=trials, selector=unique_A_check_unique_B)
-            in_data_response += export_xcorr(td2, transpose_ref_genomes2[i], degree, trials=trials, selector=unique_A_check_unique_B)
+            in_data_response += export_xcorr(d1, transpose_ref_genome1, degree, trials=trials, selector=unique_A_check_unique_B)
+            in_data_response += export_xcorr(d2, transpose_ref_genome2, degree, trials=trials, selector=unique_A_check_unique_B)
             out_data_response = []
-            out_data_response += export_xcorr(td1, transpose_ref_genomes2[i], degree, trials=trials, selector=unique_A_check_unique_B)
-            out_data_response += export_xcorr(td2, transpose_ref_genomes1[i], degree, trials=trials, selector=unique_A_check_unique_B)
+            out_data_response += export_xcorr(d1, transpose_ref_genome2, degree, trials=trials, selector=unique_A_check_unique_B)
+            out_data_response += export_xcorr(d2, transpose_ref_genome1, degree, trials=trials, selector=unique_A_check_unique_B)
 
             in_data_response = sum(in_data_response,[])
             in_data_response = sum(in_data_response)/len(in_data_response)

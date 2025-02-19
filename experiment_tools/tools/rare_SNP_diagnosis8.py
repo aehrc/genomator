@@ -80,6 +80,23 @@ degrees =  ["zerolet",
             "novemdecuplet",
             "vigintuplet"]
 
+
+
+def load_file(f):
+    try:
+        extension = f.split(".")[-1]
+        if extension=="pickle":
+            with open(f,"rb") as f:
+                p = pickle.load(f)
+                if (len(p)==2) and isinstance(p[1],int):
+                    return p[0]
+                return p
+        else:
+            return parse_VCF_to_genome_strings(f)[0]
+    except Exception as e:
+        print(f"Failed to load file {f}")
+        raise e
+
 @click.command()
 @click.argument('input_vcf_files', nargs=-1, type=click.types.Path())
 @click.option('--trials', '-t', type=click.types.INT, default=10000)
@@ -89,23 +106,6 @@ def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
     input_vcf_files, dataset_files = input_vcf_files[1::2], input_vcf_files[::2]
     if len(dataset_files)==0:
         assert False, "you need to provide some dataset files"
-    ref_genomes = []
-    for f in input_vcf_files:
-        extension = f.split(".")[-1]
-        if extension=="pickle":
-            with open(f,"rb") as f:
-                ref_genomes.append(pickle.load(f)[0])
-        else:
-            ref_genomes.append(parse_VCF_to_genome_strings(f)[0])
-    datasets = []
-    for f in dataset_files:
-        extension = f.split(".")[-1]
-        if extension=="pickle":
-            with open(f,"rb") as f:
-                datasets.append(pickle.load(f))
-        else:
-            datasets.append(parse_VCF_to_genome_strings(f)[0])
-    transpose_ref_genomes = [list(map(tuple, zip(*r))) for r in ref_genomes]
     labels = {}
     for filename in dataset_files:
         labels[filename] = filename.split("/")[-1].split("_")[0]
@@ -123,11 +123,13 @@ def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
         xs = []
         ys = []
         for i in reverse_labels[k]:
-            d = datasets[i]
             print(dataset_files[i])
-            td = list(map(tuple, zip(*d)))
-            unique_responses = export_xcorr(transpose_ref_genomes[i], td, degree, trials=trials, selector=select_unique_A_count_B)
-            zero_responses = export_xcorr(transpose_ref_genomes[i], td, degree, trials=trials, selector=select_non_A_count_B)
+            d = load_file(dataset_files[i])
+            d = list(map(tuple, zip(*d)))
+            transpose_ref_genome = load_file(input_vcf_files[i])
+            transpose_ref_genome = list(map(tuple, zip(*transpose_ref_genome)))
+            unique_responses = export_xcorr(transpose_ref_genome, d, degree, trials=trials, selector=select_unique_A_count_B)
+            zero_responses = export_xcorr(transpose_ref_genome, d, degree, trials=trials, selector=select_non_A_count_B)
             unique_responses = sum(unique_responses,[])
             zero_responses = sum(zero_responses,[])
             ratio_unique_responses_greater_than_zero = sum([a>0 for a in unique_responses])*1.0/len(unique_responses)
