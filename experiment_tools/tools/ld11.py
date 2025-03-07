@@ -9,17 +9,25 @@ from scipy.spatial.distance import squareform
 import numpy as np
 from collections import defaultdict
 from tqdm import tqdm
+from experiment_tools import *
+
+def load_file(f,postpend=True):
+    extension = f.split(".")[-1]
+    if extension=="pickle":
+        with open(f,"rb") as f:
+            p = pickle.load(f)
+            if (len(p)==2) and isinstance(p[1],int):
+                return p[0]
+            return p
+    else:
+        return parse_VCF_to_genome_strings(f)[0]
 
 # just gets average of off-axis LD
 @click.command()
 @click.argument('input_vcf_file', type=click.types.Path())
 def ld_analyse(input_vcf_file):
     print("Loading VCF")
-    reader = cyvcf2.VCF(input_vcf_file)
-    genotype = []
-    for record in tqdm(reader):
-        genotype.append([b[:-1] for b in record.genotypes])
-    reader.close()
+    genotype = load_file(input_vcf_file)
     g1 = allel.GenotypeArray(genotype,dtype='i1')
     del genotype
     gn1 = g1.to_n_alt(fill=-1)

@@ -12,7 +12,19 @@ from scipy.spatial.distance import squareform
 from scipy.ndimage.filters import gaussian_filter
 import numpy as np
 import matplotlib.image
+from experiment_tools import *
 
+
+def load_file(f,postpend=True):
+    extension = f.split(".")[-1]
+    if extension=="pickle":
+        with open(f,"rb") as f:
+            p = pickle.load(f)
+            if (len(p)==2) and isinstance(p[1],int):
+                return p[0]
+            return p
+    else:
+        return parse_VCF_to_genome_strings(f)[0]
 
 def add_border(Z,size=20,fill=1):
     Z = [[fill]*len(Z[0]) for i in range(size)]+Z+[[fill]*len(Z[0]) for i in range(size)]
@@ -25,12 +37,7 @@ def add_border(Z,size=20,fill=1):
 @click.option('--begin', type=click.INT, default=None)
 @click.option('--end', type=click.INT, default=None)
 def ld_analyse(input_vcf_file, output_image, begin, end):
-    reader = cyvcf2.VCF(input_vcf_file)
-    genotypes = []
-    print("loading VCF")
-    for record in tqdm(reader):
-        genotypes.append([a[:-1] for a in record.genotypes])
-    del reader
+    genotypes = load_file(input_vcf_file)
     print("generating genotype array")
     g = allel.GenotypeArray(genotypes,dtype='i1')
     del genotypes

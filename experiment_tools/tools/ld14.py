@@ -31,15 +31,17 @@ markers = ['.','v','s','P','*','d','X']
 @click.option('--max_y_limit', type=click.FLOAT, default=None)
 @click.option('--chunk_size', type=click.INT, default=5)
 @click.option('--output_image_file', default="LD.png")
-def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size,output_image_file):
+@click.option('--skip', type=click.INT, default=1)
+def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size,output_image_file,skip):
     assert len(compare_vcf_file)>0, "need to supply vcf file inputs"
     print("Loading Reference VCFs")
     reader = cyvcf2.VCF(input_vcf_file)
     ref_genotype = []
     positions = []
-    for record in reader:
-        ref_genotype.append([b[:-1] for b in record.genotypes])
-        positions.append(record.start)
+    for i,record in enumerate(reader):
+        if i%skip==0:
+            ref_genotype.append([b[:-1] for b in record.genotypes])
+            positions.append(record.start)
     reader.close()
     print("computing average position differences")
     average_diff_positions = []

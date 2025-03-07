@@ -6,6 +6,16 @@ import pickle
 import multiprocessing as mp
 from sys import argv
 
+def load_file(f,postpend=True):
+    extension = f.split(".")[-1]
+    if extension=="pickle":
+        with open(f,"rb") as f:
+            p = pickle.load(f)
+            if (len(p)==2) and isinstance(p[1],int):
+                return p[0]
+            return p
+    else:
+        return parse_VCF_to_genome_strings(f)[0]
 
 original_vcf_file1 = argv[1]
 original_vcf_file2 = argv[2]
@@ -17,25 +27,10 @@ else:
     sample_size = None
 silent=True
 
-original1_extension = original_vcf_file1.split(".")[-1]
-original2_extension = original_vcf_file2.split(".")[-1]
-if original1_extension=="pickle":
-    with open(original_vcf_file1,"rb") as f:
-        original1,_ = pickle.load(f)
-else:
-    original1, _ = parse_VCF_to_genome_strings(original_vcf_file1,silent=silent)
-if original2_extension=="pickle":
-    with open(original_vcf_file2,"rb") as f:
-        original2,_ = pickle.load(f)
-else:
-    original2, _ = parse_VCF_to_genome_strings(original_vcf_file2,silent=silent)
+original1 = load_file(original_vcf_file1)
+original2 = load_file(original_vcf_file2)
+output1 = load_file(output_vcf_file1)
 
-output1_extension = output_vcf_file1.split(".")[-1]
-if output1_extension=="pickle":
-    with open(output_vcf_file1,"rb") as f:
-        output1 = pickle.load(f)
-else:
-    output1, _ = parse_VCF_to_genome_strings(output_vcf_file1,silent=silent)
 
 shuffle(original1)
 shuffle(original2)
