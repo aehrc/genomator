@@ -13,6 +13,7 @@ from scipy.ndimage.filters import gaussian_filter
 import numpy as np
 import matplotlib.image
 from experiment_tools import *
+import pickle
 
 
 def load_file(f,postpend=True):
