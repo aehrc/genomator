@@ -39,6 +39,7 @@ def add_border(Z,size=20,fill=1):
 @click.option('--end', type=click.INT, default=None)
 def ld_analyse(input_vcf_file, output_image, begin, end):
     genotypes = load_file(input_vcf_file)
+    genotypes = [list(zip(*[g[::2],g[1::2]])) for g in genotypes]
     print("generating genotype array")
     g = allel.GenotypeArray(genotypes,dtype='i1')
     del genotypes

@@ -29,6 +29,7 @@ def load_file(f,postpend=True):
 def ld_analyse(input_vcf_file):
     print("Loading VCF")
     genotype = load_file(input_vcf_file)
+    genotypes = [list(zip(*[g[::2],g[1::2]])) for g in genotypes]
     g1 = allel.GenotypeArray(genotype,dtype='i1')
     del genotype
     gn1 = g1.to_n_alt(fill=-1)
