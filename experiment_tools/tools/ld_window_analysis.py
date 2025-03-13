@@ -24,6 +24,8 @@ def weighted_average(elements):
 base_colours = ['r','b','g','m','c','k','y'] 
 markers = ['.','v','s','P','*','d','X']
 
+
+
 @click.command()
 @click.argument('input_vcf_file', type=click.types.Path())
 @click.argument('compare_vcf_file', nargs=-1, type=click.types.Path())
@@ -31,13 +33,16 @@ markers = ['.','v','s','P','*','d','X']
 @click.option('--max_y_limit', type=click.FLOAT, default=None)
 @click.option('--chunk_size', type=click.INT, default=5)
 @click.option('--output_image_file', default="LD.png")
-def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size,output_image_file):
+@click.option('--skipping', type=click.INT, default=1)
+def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size,output_image_file,skipping):
     assert len(compare_vcf_file)>0, "need to supply vcf file inputs"
     print("Loading Reference VCFs")
     reader = cyvcf2.VCF(input_vcf_file)
     ref_genotype = []
     positions = []
-    for record in reader:
+    for ii,record in enumerate(reader):
+        if ii%skipping!=0:
+            continue
         ref_genotype.append([b[:-1] for b in record.genotypes])
         positions.append(record.start)
     reader.close()
@@ -64,7 +69,7 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
     for index,file in tqdm(enumerate(compare_vcf_file)):
         print("processing file {}".format(file))
         reader = cyvcf2.VCF(file)
-        g = [[b[:-1] for b in record.genotypes] for record in reader]
+        g = [[b[:-1] for b in record.genotypes] for ii,record in enumerate(reader) if ii%skipping==0]
         reader.close()
         print("generating genotype array1")
         g1 = allel.GenotypeArray(g,dtype='i1')
