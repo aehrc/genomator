@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from experiment_tools import *
-from random import shuffle
+from random import shuffle,randint
 import numpy as np
 import pickle
 import multiprocessing as mp
@@ -14,8 +14,16 @@ output_vcf_file2 = argv[4]
 
 if len(argv)>5:
     sample_size=int(argv[5])
+    if sample_size<=0:
+        sample_size = None
 else:
     sample_size = None
+if len(argv)>5:
+    sample_length=int(argv[6])
+    if sample_length <= 0:
+        sample_length = None
+else:
+    sample_length = None
 silent=True
 
 def load_file(f,postpend=True):
@@ -39,11 +47,15 @@ shuffle(original2)
 if sample_size is not None:
     original1 = original1[:sample_size]
     original2 = original2[:sample_size]
+if sample_length is not None:
+    selector = [randint(0,len(original1[0])-1) for i in range(sample_length)]
+else:
+    selector = list(range(len(original1[0])))
 
-original1 = [np.array(bytearray(r),dtype=np.int8) for r in original1]
-original2 = [np.array(bytearray(r),dtype=np.int8) for r in original2]
-output1 = [np.array(bytearray(r),dtype=np.int8) for r in output1]
-output2 = [np.array(bytearray(r),dtype=np.int8) for r in output2]
+original1 = [np.array(bytearray(r),dtype=np.int8)[selector] for r in original1]
+original2 = [np.array(bytearray(r),dtype=np.int8)[selector] for r in original2]
+output1 = [np.array(bytearray(r),dtype=np.int8)[selector] for r in output1]
+output2 = [np.array(bytearray(r),dtype=np.int8)[selector] for r in output2]
 
 
 def get_min_dist(x, dataset):
