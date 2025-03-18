@@ -16,11 +16,36 @@ from tqdm import tqdm
 import random
 import statistics
 from resample.bootstrap import confidence_interval
+from experiment_tools import *
 
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
+
+
+
+
+def load_file(f,postpend=True):
+    extension = f.split(".")[-1]
+    if extension=="pickle":
+        with open(f,"rb") as f:
+            p = pickle.load(f)
+            if (len(p)==2) and isinstance(p[1],int):
+                return p[0]
+            return p
+    else:
+        return parse_VCF_to_genome_strings(f)[0]
+
+def load_file_into_genotype_array(f,skipping=1):
+    genotype = load_file(f)
+    a1 = list(np.array(bytearray(g))[0::2*skipping].transpose() for g in genotype)
+    a2 = list(np.array(bytearray(g))[1::2*skipping].transpose() for g in genotype)
+    Z = np.dstack([a1,a2]).transpose([1,0,2])
+    g1 = allel.GenotypeArray([[[0,0]]],dtype='i1')
+    g1._values = Z
+    return g1
+
 
 base_colours = ['r','b','g','m','c','k','y'] 
 markers = ['.','v','s','P','*','d','X']
@@ -66,12 +91,7 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
     plt.figure()
     for index,file in tqdm(enumerate(compare_vcf_file)):
         print("processing file {}".format(file))
-        reader = cyvcf2.VCF(file)
-        g = [[b[:-1] for b in record.genotypes] for record in reader]
-        reader.close()
-        print("generating genotype array1")
-        g1 = allel.GenotypeArray(g,dtype='i1')
-        del g
+        g1 = load_file_into_genotype_array(file,skip)
         print("generating n_alt array")
         gn1 = g1.to_n_alt(fill=-1)
         del g1
