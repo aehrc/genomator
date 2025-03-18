@@ -17,6 +17,7 @@ import random
 import statistics
 from resample.bootstrap import confidence_interval
 from experiment_tools import *
+import pickle
 
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
