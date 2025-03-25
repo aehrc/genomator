@@ -13,7 +13,7 @@ vcf_file_split2_gz = vcf_file_split2+".gz"
 vcf_file_pickle = vcf_file+".pickle"
 vcf_file_split1_pickle = vcf_file_split1_gz+".pickle"
 vcf_file_split2_pickle = vcf_file_split2_gz+".pickle"
-
+vcf_file_gz_sample_array = ["65K_SNP_1000G_realA.vcf","65K_SNP_1000G_realB.vcf","65K_SNP_1000G_realC.vcf"]
 
 account = "####"
 virga_virtual_environment = "../env/"
@@ -96,9 +96,10 @@ if __name__ == "__main__":
         #os.system(a)
 
     commands = [
-        "mkdir attribute",
-        "mkdir attribute_scripts",
-        "mkdir runtime_scripts",
+        "mkdir -p attribute",
+        "mkdir -p attribute_scripts",
+        "mkdir -p runtime_scripts",
+        "mkdir -p sources",
         "wget {} -O {}".format(prepend.format(hapt_file_zip),hapt_file_zip),
         "wget {} -O {}".format(prepend.format(legend_file),legend_file),
         "unzip {}".format(hapt_file_zip),
@@ -115,6 +116,9 @@ if __name__ == "__main__":
         "vcf_to_pickle.py {0} {0}.pickle".format(vcf_file_gz),
         "vcf_to_pickle.py {0} {0}.pickle".format(vcf_file_split1_gz),
         "vcf_to_pickle.py {0} {0}.pickle".format(vcf_file_split2_gz),
+        f"vcf_trimmer.py {vcf_file_gz} {vcf_file_gz_sample_array[0]} 2000 10000",
+        f"vcf_trimmer.py {vcf_file_gz} {vcf_file_gz_sample_array[1]} 2000 10000",
+        f"vcf_trimmer.py {vcf_file_gz} {vcf_file_gz_sample_array[2]} 2000 10000",
         ]
 
     for c in chromisome_files:
