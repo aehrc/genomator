@@ -12,13 +12,16 @@ import seaborn as sns
 from matplotlib.ticker import AutoMinorLocator
 from matplotlib.ticker import PercentFormatter
 import os
+from collections import defaultdict
+
 
 os.chdir("reverse")
 files = glob.glob("./wasserstein_*")
 files = sorted(files,key=lambda x: x.split("_")[::-1])
 print("WASSERSTEIN")
 from statistics import mean
-w_dataset=[]
+#w_dataset=[]
+w_dataset = defaultdict(lambda : defaultdict(list))
 for f in files:
     #print(f"loading {f}")
     with open(f,'r') as f:
@@ -31,7 +34,15 @@ for f in files:
     print(batch_size,end=",")
     print(Z,end=",")
     print(val)
-    w_dataset.append((Z,batch_size,val))
+    w_dataset[Z][batch_size] += data
+    #w_dataset.append((Z,batch_size,val))
+ww_dataset = []
+for k1 in w_dataset.keys():
+    for k2 in w_dataset[k1].keys():
+        ww_dataset.append((k1,k2,mean(w_dataset[k1][k2])))
+w_dataset = ww_dataset
+
+
 w_dataset = sorted(w_dataset)
 
 

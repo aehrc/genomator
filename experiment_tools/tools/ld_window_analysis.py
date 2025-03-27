@@ -60,7 +60,8 @@ markers = ['.','v','s','P','*','d','X']
 @click.option('--chunk_size', type=click.INT, default=5)
 @click.option('--output_image_file', default="LD.png")
 @click.option('--skipping', type=click.INT, default=1)
-def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size,output_image_file,skipping):
+@click.option('--title', type=click.STRING, default=None)
+def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size,output_image_file,skipping,title):
     assert len(compare_vcf_file)>0, "need to supply vcf file inputs"
     print("Loading Reference VCFs")
     reader = cyvcf2.VCF(input_vcf_file)
@@ -144,7 +145,8 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
         for i in range(len(compare_vcf_file)):
             lgnd.legend_handles[i]._sizes = [30]
 
-    plt.title(input_vcf_file.split("/")[-1].split("_")[0].split(".")[0].upper())
+    title = title if title is not None else input_vcf_file.split("/")[-1].split("_")[0].split(".")[0].upper()
+    plt.title(title)
     plt.xlabel("Window size (kbases)")
     plt.ylabel("Average Square error")
     plt.savefig(output_image_file, bbox_inches='tight')
