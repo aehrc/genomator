@@ -104,11 +104,14 @@ def load_file(f):
 @click.option('--output_image_file', default="Rare_SNP_analysis_output.png")
 def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
     input_vcf_files, dataset_files = input_vcf_files[1::2], input_vcf_files[::2]
+    input_files = sorted(list(zip(*[input_vcf_files, dataset_files])))
+    input_vcf_files, dataset_files = zip(*input_files)
+    
     if len(dataset_files)==0:
         assert False, "you need to provide some dataset files"
     labels = {}
     for filename in dataset_files:
-        labels[filename] = filename.split("/")[-1].split("_")[0]
+        labels[filename] = filename.split("/")[-1].split("_")[0].title()
     label_values = sorted(list(set(labels.values())))
     label_colours = {}
     label_markers = {}

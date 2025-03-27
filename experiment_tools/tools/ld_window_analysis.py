@@ -63,6 +63,7 @@ markers = ['.','v','s','P','*','d','X']
 @click.option('--title', type=click.STRING, default=None)
 def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size,output_image_file,skipping,title):
     assert len(compare_vcf_file)>0, "need to supply vcf file inputs"
+    compare_vcf_files = sorted(compare_vcf_file)
     print("Loading Reference VCFs")
     reader = cyvcf2.VCF(input_vcf_file)
     ref_genotype = []
@@ -133,7 +134,7 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
         dy_upper = [d[1] for d in ddy]
 
         plt.plot(dx, dy, c=base_colours[index],
-                label=compare_vcf_file[index].split("/")[-1].split("_")[0].split(".")[0], alpha=1.0, marker=markers[index])
+                label=compare_vcf_file[index].split("/")[-1].split("_")[0].split(".")[0].title(), alpha=1.0, marker=markers[index])
         plt.fill_between(dx,dy_lower,dy_upper,color=base_colours[index],alpha=0.2)
         if max_y_limit:
             plt.ylim(0,max_y_limit)
