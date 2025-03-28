@@ -1,5 +1,5 @@
 from source_gen import *
-out_template = "../attribute/{}.vcf.pickle"
+out_template = "../attribute_larger/{}.vcf.pickle"
 
 virga_methods = {}
 def crbm_run1(f):
@@ -14,7 +14,7 @@ virga_methods[wgan_run1.__name__] = wgan_run1
 
 petrichor_methods = {}
 def mark_run(f,i):
-  out_file1 = out_template.format(f"mark_split1_{i}")
+  out_file1 = out_template.format(f"mark_split1_{i}_bigger")
   f.write(f"/usr/bin/time -v MARK_run2.py {vcf_file_split1_pickle} {out_file1} 2500 --window_leng={i} \n")
 petrichor_methods[mark_run.__name__] = mark_run
 
@@ -32,7 +32,7 @@ nerfed_virga_experiments = []
 s=150
 z = s*1.0/100
 l=0.99
-nerfed_virga_experiments.append(["genomator_run",s,z,0,1,"tinicard",l,""])
+nerfed_virga_experiments.append(["genomator_run",s,z,0,1,"tinicard",l,"bigger"])
 
 
 virga_experiments = []
