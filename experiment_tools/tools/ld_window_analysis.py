@@ -63,7 +63,7 @@ markers = ['.','v','s','P','*','d','X']
 @click.option('--title', type=click.STRING, default=None)
 def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size,output_image_file,skipping,title):
     assert len(compare_vcf_file)>0, "need to supply vcf file inputs"
-    compare_vcf_files = sorted(compare_vcf_file)
+    compare_vcf_file = sorted(compare_vcf_file)
     print("Loading Reference VCFs")
     reader = cyvcf2.VCF(input_vcf_file)
     ref_genotype = []

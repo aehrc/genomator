@@ -56,8 +56,8 @@ def select_non_A_count_B(A,B):
     Bcounts = [B.count(a) for a in diffset]
     return Bcounts
 
-base_colours = ['r','b','g','k','m','c','k','y']
-markers = ['.','v','s','d','P','*','d','X']
+base_colours = ['r','b','g','m','c','k','y'] 
+markers = ['.','v','s','P','*','d','X']
 degrees =  ["zerolet",
             "singlet",
             "doublet",

@@ -6,22 +6,22 @@ virga_methods = {}
 def crbm_run1(f):
   out_file1 = out_template.format("crbm_split1_bigger")
   out_file2 = out_template.format("crbm_split2_bigger")
-  f.write(f"CRBM_run.py {vcf_file_split1_pickle} {out_file1} 120 --fixnodes=5000 --dump_output_interval=19800 --ep_max=19801 --gpu=True\n")
+  f.write(f"/usr/bin/time -v CRBM_run.py {vcf_file_split1_pickle} {out_file1} 120 --fixnodes=5000 --dump_output_interval=19800 --ep_max=19801 --gpu=True\n")
 def crbm_run2(f):
   out_file1 = out_template.format("crbm_split1_bigger")
   out_file2 = out_template.format("crbm_split2_bigger")
-  f.write(f"CRBM_run.py {vcf_file_split2_pickle} {out_file2} 120 --fixnodes=5000 --dump_output_interval=19800 --ep_max=19801 --gpu=True\n")
+  f.write(f"/usr/bin/time -v CRBM_run.py {vcf_file_split2_pickle} {out_file2} 120 --fixnodes=5000 --dump_output_interval=19800 --ep_max=19801 --gpu=True\n")
 virga_methods[crbm_run1.__name__] = crbm_run1
 virga_methods[crbm_run2.__name__] = crbm_run2
 
 def wgan_run1(f):
   out_file1 = out_template.format("wgan_split1_bigger")
   out_file2 = out_template.format("wgan_split2_bigger")
-  f.write(f"WGAN_run.py {vcf_file_split1_pickle} {out_file1} 120 --dump_output_interval=3480 --epochs=3481\n")
+  f.write(f"/usr/bin/time -v WGAN_run.py {vcf_file_split1_pickle} {out_file1} 120 --dump_output_interval=3480 --epochs=3481\n")
 def wgan_run2(f):
   out_file1 = out_template.format("wgan_split1_bigger")
   out_file2 = out_template.format("wgan_split2_bigger")
-  f.write(f"WGAN_run.py {vcf_file_split2_pickle} {out_file2} 120 --dump_output_interval=3480 --epochs=3481\n")
+  f.write(f"/usr/bin/time -v WGAN_run.py {vcf_file_split2_pickle} {out_file2} 120 --dump_output_interval=3480 --epochs=3481\n")
 virga_methods[wgan_run1.__name__] = wgan_run1
 virga_methods[wgan_run2.__name__] = wgan_run2
 
@@ -31,8 +31,8 @@ petrichor_methods = {}
 def mark_run(f,i):
   out_file1 = out_template.format(f"mark_split1_{i}")
   out_file2 = out_template.format(f"mark_split2_{i}")
-  f.write(f"MARK_run2.py {vcf_file_split1_pickle} {out_file1} 120 --window_leng={i} \n")
-  f.write(f"MARK_run2.py {vcf_file_split2_pickle} {out_file2} 120 --window_leng={i} \n")
+  f.write(f"/usr/bin/time -v MARK_run2.py {vcf_file_split1_pickle} {out_file1} 120 --window_leng={i} \n")
+  f.write(f"/usr/bin/time -v MARK_run2.py {vcf_file_split2_pickle} {out_file2} 120 --window_leng={i} \n")
 petrichor_methods[mark_run.__name__] = mark_run
 
 nerfed_virga_methods = {}
@@ -40,8 +40,8 @@ nerfed_virga_methods = {}
 def genomator_run(f,i,z,n,ii,solver,looseness,postpend=""):
   out_file1 = out_template.format(f"genomator_split1_{i}_{z}_{n}_{ii}_{solver}_{looseness}_{postpend}")
   out_file2 = out_template.format(f"genomator_split2_{i}_{z}_{n}_{ii}_{solver}_{looseness}_{postpend}")
-  f.write(f"genomator {vcf_file_split1_pickle} {out_file1} 120 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=100 --noise={n} --involutions={ii} --looseness={looseness}\n")
-  f.write(f"genomator {vcf_file_split2_pickle} {out_file2} 120 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=100 --noise={n} --involutions={ii} --looseness={looseness}\n")
+  f.write(f"/usr/bin/time -v genomator {vcf_file_split1_pickle} {out_file1} 120 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=100 --noise={n} --involutions={ii} --looseness={looseness}\n")
+  f.write(f"/usr/bin/time -v genomator {vcf_file_split2_pickle} {out_file2} 120 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=100 --noise={n} --involutions={ii} --looseness={looseness}\n")
 nerfed_virga_methods[genomator_run.__name__] = genomator_run
 
 
