@@ -774,7 +774,7 @@ from experiment_tools import parse_VCF_to_genome_strings, parse_genome_strings_t
 
 
 
-def main_CRBM(inpt, NS, ep_max=2001, B=1000, it_mcmc=50, gpu=False, dump_output_interval=50,output_vcf_file="CRBM_output",FixNodes=300,Nh=500):
+def main_CRBM(inpt, NS, ep_max=20001, B=1000, it_mcmc=50, gpu=False, dump_output_interval=50,output_vcf_file="CRBM_output",FixNodes=5000,Nh=2000):
     # CHOOSE CPU OR GPU
     if not gpu:
         device = torch.device("cpu") 
@@ -793,15 +793,15 @@ def main_CRBM(inpt, NS, ep_max=2001, B=1000, it_mcmc=50, gpu=False, dump_output_
     # Number of hidden nodes
     #Nh  = 500 #500 #2000
     # Learning rate
-    lr = 0.005 #0.001
+    lr = 0.001 #0.001
     # L2 Regularization
     l2 = 0.0
     # Number of Gibbs steps to compute the negative term of the gradient.
     NGibbs = 50
     # minibatch size
-    nMB = 500 #500 #1252
+    nMB = 1252
     # Nb of parallel chains to compute the negative term of the gradient.
-    nNeg = 500 #500 #1252
+    nNeg = 1252
 
     myRBM = CRBM(num_visible=Nv,
                     num_hidden=Nh,
@@ -870,13 +870,13 @@ def main_CRBM(inpt, NS, ep_max=2001, B=1000, it_mcmc=50, gpu=False, dump_output_
 @click.argument('input_vcf_file', type=click.types.Path())
 @click.argument('output_vcf_file', type=click.types.Path())
 @click.argument('number_of_genomes', type=click.INT, default=1)
-@click.option('--ep_max', type=click.INT, default=2001)
-@click.option('--b', type=click.INT, default=1000)
-@click.option('--it_mcmc', type=click.INT, default=500)
+@click.option('--ep_max', type=click.INT, default=20001)
+@click.option('--b', type=click.INT, default=20000)
+@click.option('--it_mcmc', type=click.INT, default=20000)
 @click.option('--gpu', type=click.BOOL, default=False)
 @click.option('--dump_output_interval', type=click.INT, default=30)
-@click.option('--nh', type=click.INT, default=500)
-@click.option('--fixnodes', type=click.INT, default=300)
+@click.option('--nh', type=click.INT, default=2000)
+@click.option('--fixnodes', type=click.INT, default=5000)
 def CRBM_run(input_vcf_file, output_vcf_file, number_of_genomes,ep_max,b,it_mcmc,gpu,dump_output_interval,nh,fixnodes):
     if input_vcf_file.split(".")[-1]=="pickle":
         with open(input_vcf_file,"rb") as f:
