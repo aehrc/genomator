@@ -39,8 +39,8 @@ def wasserstein_analyse(input_vcf_file1,input_vcf_file2,slices,samples):
 
     genotypes1 = np.array(genotypes1)
     genotypes2 = np.array(genotypes2)
-    genotypes1_balance = np.array([len(genotypes2) for i in range(len(genotypes1))])
-    genotypes2_balance = np.array([len(genotypes1) for i in range(len(genotypes2))])
+    genotypes1_balance = np.array([1.0/len(genotypes1) for i in range(len(genotypes1))])
+    genotypes2_balance = np.array([1.0/len(genotypes2) for i in range(len(genotypes2))])
 
     pca_transform = PCA(n_components=2,svd_solver='full').fit(np.asarray(np.matrix(genotypes1)))
     genotypes1_transform = pca_transform.transform(genotypes1)
