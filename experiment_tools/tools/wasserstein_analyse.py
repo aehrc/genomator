@@ -32,8 +32,8 @@ def load_file(f,postpend=True):
 @click.option('--slices', type=click.INT, default=300)
 @click.option('--samples', type=click.INT, default=200)
 def wasserstein_analyse(input_vcf_file1,input_vcf_file2,slices,samples):
-    genotypes1,_ = load_file(input_vcf_file1)
-    genotypes2,_ = load_file(input_vcf_file2)
+    genotypes1 = load_file(input_vcf_file1)
+    genotypes2 = load_file(input_vcf_file2)
     genotypes1 = [list(g) for g in genotypes1]
     genotypes2 = [list(g) for g in genotypes2]
 
