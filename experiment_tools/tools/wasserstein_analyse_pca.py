@@ -11,6 +11,20 @@ import ot
 import numpy as np
 from sklearn.decomposition import PCA
 from experiment_tools import parse_VCF_to_genome_strings
+import pickle
+
+
+
+def load_file(f,postpend=True):
+    extension = f.split(".")[-1]
+    if extension=="pickle":
+        with open(f,"rb") as f:
+            p = pickle.load(f)
+            if (len(p)==2) and isinstance(p[1],int):
+                return p[0]
+            return p
+    else:
+        return parse_VCF_to_genome_strings(f)[0]
 
 @click.command()
 @click.argument('input_vcf_file1', type=click.types.Path())
@@ -18,8 +32,8 @@ from experiment_tools import parse_VCF_to_genome_strings
 @click.option('--slices', type=click.INT, default=300)
 @click.option('--samples', type=click.INT, default=200)
 def wasserstein_analyse(input_vcf_file1,input_vcf_file2,slices,samples):
-    genotypes1,_ = parse_VCF_to_genome_strings(input_vcf_file1)
-    genotypes2,_ = parse_VCF_to_genome_strings(input_vcf_file2)
+    genotypes1,_ = load_file(input_vcf_file1)
+    genotypes2,_ = load_file(input_vcf_file2)
     genotypes1 = [list(g) for g in genotypes1]
     genotypes2 = [list(g) for g in genotypes2]
 
