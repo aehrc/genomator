@@ -33,12 +33,21 @@ def load_file(f,postpend=True):
     else:
         return parse_VCF_to_genome_strings(f)[0]
 
-def load_file_into_genotype_array(f,skipping=1):
+def load_file_into_genotype_array_diploid(f,skipping=1):
     genotype = load_file(f)
     a1 = list(np.array(bytearray(g))[0::2*skipping].transpose() for g in genotype)
     a2 = list(np.array(bytearray(g))[1::2*skipping].transpose() for g in genotype)
     Z = np.dstack([a1,a2]).transpose([1,0,2])
     g1 = allel.GenotypeArray([[[0,0]]],dtype='i1')
+    g1._values = Z
+    return g1
+
+
+def load_file_into_genotype_array_haploid(f,skipping=1):
+    genotype = load_file(f)
+    a1 = list(np.array(bytearray(g))[::skipping].transpose() for g in genotype)
+    Z = np.dstack(a1).transpose([1,2,0])
+    g1 = allel.GenotypeArray([[[0]]],dtype='i1')
     g1._values = Z
     return g1
 
@@ -63,7 +72,6 @@ markers = ['.','v','s','P','*','d','X']
 @click.option('--title', type=click.STRING, default=None)
 def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size,output_image_file,skipping,title):
     assert len(compare_vcf_file)>0, "need to supply vcf file inputs"
-    compare_vcf_file = sorted(compare_vcf_file)
     print("Loading Reference VCFs")
     reader = cyvcf2.VCF(input_vcf_file)
     ref_genotype = []
@@ -96,7 +104,7 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
     plt.figure()
     for index,file in tqdm(enumerate(compare_vcf_file)):
         print("processing file {}".format(file))
-        g1 = load_file_into_genotype_array(file,skipping)
+        g1 = load_file_into_genotype_array_haploid(file,skipping)
         print("generating n_alt array")
         gn1 = g1.to_n_alt(fill=-1)
         del g1
@@ -105,11 +113,12 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
         del gn1
         print("squaring")
         r1 = np.nan_to_num(squareform(r1**2))
-        #print("average LD {}".format(np.sum(r1)/np.multiply(*r1.shape)))
-        #r1_error = r1-ref_r1
-        #r1_error = r1_error ** 2
-        #print("average LD square error {}".format(np.sum(r1_error)/np.multiply(*r1_error.shape)))
-        #del r1_error
+
+        print("average LD {}".format(np.sum(r1)/np.multiply(*r1.shape)))
+        r1_error = r1-ref_r1
+        r1_error = r1_error ** 2
+        print("average LD square error {}".format(np.sum(r1_error)/np.multiply(*r1_error.shape)))
+        del r1_error
 
         dx = []
         dy = []
@@ -132,9 +141,10 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
         del r1
         dy_lower = [d[0] for d in ddy]
         dy_upper = [d[1] for d in ddy]
+        print(dy)
 
         plt.plot(dx, dy, c=base_colours[index],
-                label=compare_vcf_file[index].split("/")[-1].split("_")[0].split(".")[0].title(), alpha=1.0, marker=markers[index])
+                label=compare_vcf_file[index].split("/")[-1].split("_")[0].split(".")[0].capitalize(), alpha=1.0) #, marker=markers[index])
         plt.fill_between(dx,dy_lower,dy_upper,color=base_colours[index],alpha=0.2)
         if max_y_limit:
             plt.ylim(0,max_y_limit)
@@ -146,11 +156,12 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
         for i in range(len(compare_vcf_file)):
             lgnd.legend_handles[i]._sizes = [30]
 
-    title = title if title is not None else input_vcf_file.split("/")[-1].split("_")[0].split(".")[0].upper()
-    plt.title(title)
+    if title is not None:
+        plt.title(title)
     plt.xlabel("Window size (kbases)")
     plt.ylabel("Average Square error")
     plt.savefig(output_image_file, bbox_inches='tight')
+    plt.show()
 
 if __name__ == '__main__':
     ld_analyse()

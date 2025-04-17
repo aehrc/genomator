@@ -6,11 +6,11 @@ virga_methods = {}
 def crbm_run1(f):
   out_file1 = out_template.format("crbm_split1_bigger")
   out_file2 = out_template.format("crbm_split2_bigger")
-  f.write(f"/usr/bin/time -v CRBM_run.py {vcf_file_split1_pickle} {out_file1} 120 --fixnodes=5000 --dump_output_interval=19800 --ep_max=19801 --gpu=True\n")
+  f.write(f"/usr/bin/time -v CRBM_run.py {vcf_file_split1_pickle} {out_file1} 120 --fixnodes=5000 --dump_output_interval=20000 --ep_max=20001 --gpu=True\n")
 def crbm_run2(f):
   out_file1 = out_template.format("crbm_split1_bigger")
   out_file2 = out_template.format("crbm_split2_bigger")
-  f.write(f"/usr/bin/time -v CRBM_run.py {vcf_file_split2_pickle} {out_file2} 120 --fixnodes=5000 --dump_output_interval=19800 --ep_max=19801 --gpu=True\n")
+  f.write(f"/usr/bin/time -v CRBM_run.py {vcf_file_split2_pickle} {out_file2} 120 --fixnodes=5000 --dump_output_interval=20000 --ep_max=20001 --gpu=True\n")
 virga_methods[crbm_run1.__name__] = crbm_run1
 virga_methods[crbm_run2.__name__] = crbm_run2
 

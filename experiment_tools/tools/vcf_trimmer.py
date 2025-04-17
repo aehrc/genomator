@@ -1,11 +1,21 @@
 #!/usr/bin/env python3
 import click
 from random import shuffle
-from experiment_tools import parse_VCF_to_genome_strings
+from experiment_tools import *
 import vcfpy
 from copy import deepcopy as copy
 from tqdm import tqdm
 
+def load_file(f,postpend=True):
+    extension = f.split(".")[-1]
+    if extension=="pickle":
+        with open(f,"rb") as f:
+            p = pickle.load(f)
+            if (len(p)==2) and isinstance(p[1],int):
+                return p[0]
+            return p
+    else:
+        return parse_VCF_to_genome_strings(f)[0]
 
 def parse_genome_strings_to_VCF(s, input_vcf_file, output_vcf_file, ploidy):
     number_of_genomes = len(s)
@@ -35,8 +45,9 @@ def parse_genome_strings_to_VCF(s, input_vcf_file, output_vcf_file, ploidy):
 @click.argument('output_vcf_file', type=click.types.Path())
 @click.argument('samples', type=click.INT)
 @click.argument('snps', type=click.INT)
-def vcf_trimmer(input_vcf_file,output_vcf_file,samples,snps):
-    vcf_in, ploidy = parse_VCF_to_genome_strings(input_vcf_file)
+@click.argument('ploidy', type=click.INT)
+def vcf_trimmer(input_vcf_file,output_vcf_file,samples,snps,ploidy):
+    vcf_in = parse_VCF_to_genome_strings(input_vcf_file)
     dataset_snps = len(vcf_in[0])
     assert dataset_snps >= snps, "ERROR: cannot trim to number of SNPs more than there are SNPs in the VCF input"
     indices = list(range(dataset_snps))
@@ -46,7 +57,11 @@ def vcf_trimmer(input_vcf_file,output_vcf_file,samples,snps):
     assert len(vcf_in)>= samples, "ERROR: cannot trim to samples more than there are samples in the VCF input"
     shuffle(vcf_in)
     vcf_in = vcf_in[:samples]
-    parse_genome_strings_to_VCF(vcf_in, input_vcf_file, output_vcf_file, ploidy)
+    if vcf_in.split(".")[-1]=='vcf':
+        parse_genome_strings_to_VCF(vcf_in, input_vcf_file, output_vcf_file, ploidy)
+    else:
+        with open(output_vcf_file,'wb') as f:
+            pickle.dump(vcf_in,f)
 
 if __name__ == '__main__':
     vcf_trimmer()
