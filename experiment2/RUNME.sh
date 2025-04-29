@@ -3,6 +3,7 @@ python attribute_experiment.py
 cd attribute_scripts
 source petrichor_run.sh
 source virga_run.sh
+python process.py
 cd ..
 python attribute_experiment_larger.py
 cd attribute_scripts
