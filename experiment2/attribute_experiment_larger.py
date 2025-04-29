@@ -4,12 +4,12 @@ out_template = "../attribute_larger/{}.vcf.pickle"
 virga_methods = {}
 def crbm_run1(f):
   out_file1 = out_template.format("crbm_split1_bigger")
-  f.write(f"/usr/bin/time -v CRBM_run.py {vcf_file_split1_pickle} {out_file1} 2500 --fixnodes=5000 --dump_output_interval=19800 --ep_max=19801 --gpu=True\n")
+  f.write(f"/usr/bin/time -v CRBM_run.py {vcf_file_split1_pickle} {out_file1} 2500 --fixnodes=5000 --dump_output_interval=20000 --ep_max=20001 --gpu=True\n")
 virga_methods[crbm_run1.__name__] = crbm_run1
 def wgan_run1(f):
   out_file1 = out_template.format("wgan_split1_bigger")
   out_file2 = out_template.format("wgan_split2_bigger")
-  f.write(f"/usr/bin/time -v WGAN_run.py {vcf_file_split1_pickle} {out_file1} 2500 --dump_output_interval=3480 --epochs=3481\n")
+  f.write(f"/usr/bin/time -v WGAN_run.py {vcf_file_split1_pickle} {out_file1} 2500 --dump_output_interval=3500 --epochs=3501\n")
 virga_methods[wgan_run1.__name__] = wgan_run1
 
 petrichor_methods = {}

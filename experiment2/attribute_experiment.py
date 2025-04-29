@@ -17,11 +17,11 @@ virga_methods[crbm_run2.__name__] = crbm_run2
 def wgan_run1(f):
   out_file1 = out_template.format("wgan_split1_bigger")
   out_file2 = out_template.format("wgan_split2_bigger")
-  f.write(f"/usr/bin/time -v WGAN_run.py {vcf_file_split1_pickle} {out_file1} 120 --dump_output_interval=3480 --epochs=3481\n")
+  f.write(f"/usr/bin/time -v WGAN_run.py {vcf_file_split1_pickle} {out_file1} 120 --dump_output_interval=3500 --epochs=3501\n")
 def wgan_run2(f):
   out_file1 = out_template.format("wgan_split1_bigger")
   out_file2 = out_template.format("wgan_split2_bigger")
-  f.write(f"/usr/bin/time -v WGAN_run.py {vcf_file_split2_pickle} {out_file2} 120 --dump_output_interval=3480 --epochs=3481\n")
+  f.write(f"/usr/bin/time -v WGAN_run.py {vcf_file_split2_pickle} {out_file2} 120 --dump_output_interval=3500 --epochs=3501\n")
 virga_methods[wgan_run1.__name__] = wgan_run1
 virga_methods[wgan_run2.__name__] = wgan_run2
 
