@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 datasetfiles = glob.glob("./attribute/*.pickle")
 datasetfiles = [f for f in datasetfiles if 'split2' in f]
-datasetfiles = [f for f in datasetfiles if 'genomator' in f]
+#datasetfiles = [f for f in datasetfiles if 'genomator' in f]
 datasetfiles = sorted(datasetfiles)
 datasetfiles = [d for d in datasetfiles if not os.path.isfile(f"./attribute_scripts/results2_{d.split('/')[-1]}.txt")]
 

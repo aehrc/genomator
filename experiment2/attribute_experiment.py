@@ -40,8 +40,8 @@ nerfed_virga_methods = {}
 def genomator_run(f,i,z,n,ii,solver,looseness,postpend=""):
   out_file1 = out_template.format(f"genomator_split1_{i}_{z}_{n}_{ii}_{solver}_{looseness}_{postpend}")
   out_file2 = out_template.format(f"genomator_split2_{i}_{z}_{n}_{ii}_{solver}_{looseness}_{postpend}")
-  f.write(f"/usr/bin/time -v genomator {vcf_file_split1_pickle} {out_file1} 120 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=100 --noise={n} --involutions={ii} --looseness={looseness}\n")
-  f.write(f"/usr/bin/time -v genomator {vcf_file_split2_pickle} {out_file2} 120 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=100 --noise={n} --involutions={ii} --looseness={looseness}\n")
+  f.write(f"/usr/bin/time -v genomator {vcf_file_split1_pickle} {out_file1} 120 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=10000 --noise={n} --involutions={ii} --looseness={looseness}\n")
+  f.write(f"/usr/bin/time -v genomator {vcf_file_split2_pickle} {out_file2} 120 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=10000 --noise={n} --involutions={ii} --looseness={looseness}\n")
 nerfed_virga_methods[genomator_run.__name__] = genomator_run
 
 

@@ -21,7 +21,7 @@ petrichor_methods[mark_run.__name__] = mark_run
 nerfed_virga_methods = {}
 def genomator_run(f,i,z,n,ii,solver,looseness,postpend=""):
   out_file1 = out_template.format(f"genomator_split1_{i}_{z}_{n}_{ii}_{solver}_{looseness}_{postpend}")
-  f.write(f"/usr/bin/time -v genomator {vcf_file_split1_pickle} {out_file1} 2500 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=100 --noise={n} --involutions={ii} --looseness={looseness}\n")
+  f.write(f"/usr/bin/time -v genomator {vcf_file_split1_pickle} {out_file1} 2500 0 0 --sample_group_size={i} --exception_space=-{z} --solver_name={solver} --difference_samples=10000 --noise={n} --involutions={ii} --looseness={looseness}\n")
 nerfed_virga_methods[genomator_run.__name__] = genomator_run
 
 
@@ -37,9 +37,7 @@ nerfed_virga_experiments.append(["genomator_run",s,z,0,1,"tinicard",l,"bigger"])
 
 virga_experiments = []
 virga_experiments.append(["crbm_run1"])
-virga_experiments.append(["crbm_run2"])
 virga_experiments.append(["wgan_run1"])
-virga_experiments.append(["wgan_run2"])
 
 
 script_prepend = "./attribute_scripts/{}"
