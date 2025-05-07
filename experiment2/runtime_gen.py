@@ -32,5 +32,5 @@ for k in methods.keys():
                 ff.write(header_string)
                 ff.write("echo {}{}\n".format(k,index))
                 ff.write("/usr/bin/time -v "+line.format(index))
-            f.write("sbatch {}\n".format(filename))
+            f.write(". sbatch.sh {}\n".format(filename))
 

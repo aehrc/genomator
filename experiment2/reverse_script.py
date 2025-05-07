@@ -66,8 +66,8 @@ with open("run_all.sh","w") as f:
             seed = str(random())[2:]
             ff.write(B.format(g=g,ex=ex,s=s,p=p,seed=seed,rotate='C'))
             ff.write(AB_end)
-        f.write(f"sbatch {filename1}\n")
-        f.write(f"sbatch {filename2}\n")
+        f.write(f". sbatch.sh {filename1}\n")
+        f.write(f". sbatch.sh {filename2}\n")
 
 
 

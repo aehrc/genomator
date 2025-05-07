@@ -4,7 +4,7 @@ import pandas as pd
 from functools import reduce
 from matplotlib.ticker import FuncFormatter
 
-base_colours = ['r','g','m','c','k','y'] 
+base_colours = ['r','b','g','m','c','k','y'] 
 
 with open("runtime_results.txt","r") as f:
     data = pd.read_csv(f)
@@ -12,18 +12,17 @@ data = data.fillna(11757483)
 
 methods = set(data["METHOD"].tolist())
 methods = sorted(list(methods))
-results = {m:(data[data['METHOD']==m]['TIME']*1.0/60).tolist() for m in methods}
-snps = reduce(lambda a,b: a|b, [set(data[data['METHOD']==m]['SCALE'].tolist()) for m in methods] )
-snps = sorted(list(snps))
-snps = [s*1.0/1000 for s in snps]
-results = {m:(snps[:len(results[m])],results[m]) for m in results.keys()}
+times = {m:(data[data['METHOD']==m]['TIME']*1.0/60).tolist() for m in methods}
+scales = {m:(data[data['METHOD']==m]['SCALE']*1.0/1000).tolist() for m in methods}
+results = {m:list(zip(*sorted(zip(*[scales[m],times[m]])))) for m in methods}
+
 
 
 plt.figure(figsize=(8.8,5.6))
 for index,m in enumerate(results.keys()):
     plt.plot(results[m][0],results[m][1],color=base_colours[index], label=m, linewidth=2)
-    #if m!="GENOMATOR":
-    #    plt.annotate("✕",xy=(results[m][0][-1], results[m][1][-1]), ha='center',va='center', fontsize=16)
+    if m=="Wgan":
+        plt.annotate("✕",xy=(results[m][0][-1], results[m][1][-1]), ha='center',va='center', fontsize=16, color=base_colours[index])
 
 '''extrapolated_x = [results['GENOMATOR'][0][-1], 64500000/1000]
 extrapolated_y = [results['GENOMATOR'][1][-1],
@@ -32,7 +31,7 @@ extrapolated_y = [results['GENOMATOR'][1][-1],
         (extrapolated_x[-1]-extrapolated_x[-2]) ]
 plt.plot(extrapolated_x, extrapolated_y, linestyle=(0,(1.5,2)), color=base_colours[methods.index('GENOMATOR')], linewidth=2)
 '''
-#plt.loglog()
+plt.loglog()
 plt.semilogx()
 plt.title('Runtimes at Scale', pad=25)#, fontsize=15)
 plt.xlabel('number of SNPs (x1000)', labelpad=17, fontsize=9)

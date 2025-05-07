@@ -72,18 +72,18 @@ with open(script_prepend.format("petrichor_run.sh"),'w') as petrichor_f:
         with open(script_prepend.format(filename),"w") as f:
             f.write(petrichor_header)
             petrichor_methods[e[0]](*([f]+e[1:]))
-        petrichor_f.write(f"sbatch {filename}\n")
+        petrichor_f.write(f". sbatch.sh {filename}\n")
 with open(script_prepend.format("virga_run.sh"),'w') as virga_f:
     for e in virga_experiments:
         filename = "_".join([str(ee) for ee in e]) + ".sh"
         with open(script_prepend.format(filename),"w") as f:
             f.write(virga_header)
             virga_methods[e[0]](*([f]+e[1:]))
-        virga_f.write(f"sbatch {filename}\n")
+        virga_f.write(f". sbatch.sh {filename}\n")
     for e in nerfed_virga_experiments:
         filename = "_".join([str(ee) for ee in e]) + ".sh"
         with open(script_prepend.format(filename),"w") as f:
             f.write(virga_header_nerfed)
             nerfed_virga_methods[e[0]](*([f]+e[1:]))
-        virga_f.write(f"sbatch {filename}\n")
+        virga_f.write(f". sbatch.sh {filename}\n")
 
