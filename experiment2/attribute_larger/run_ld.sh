@@ -1,2 +1,0 @@
-cp mark_split1_330_bigger.vcf.pickle markov_split1_330_bigger.vcf.pickle
-ld_window_analysis.py ../sources/65K_SNP_1000G_real_split1.vcf.gz ./crbm_split1_bigger.vcf.pickle20001.pickle genomator_split1_150_1.5_0_1_tinicard_0.99_bigger.vcf.pickle markov_split1_330_bigger.vcf.pickle ./wgan_split1_bigger.vcf.pickle3480.pickle --skipping=30 --max_offset=2500 --max_y_limit=0.0007 --chunk_size=40 > ld_output.txt

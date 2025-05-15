@@ -1,2 +1,0 @@
-cp mark_split1_330_bigger.vcf.pickle markov_split1_330_bigger.vcf.pickle
-rare_SNP_diagnosis8.py ./wgan_split1_bigger.vcf.pickle3480.pickle ../sources/65K_SNP_1000G_real_split1.vcf.gz ./crbm_split1.vcf.pickle19801.pickle ../sources/65K_SNP_1000G_real_split1.vcf.gz ./genomator_split1_150_1.5_0_1_tinicard_0.99_bigger.vcf.pickle ../sources/65K_SNP_1000G_real_split1.vcf.gz ./markov_split1_330_bigger.vcf.pickle ../sources/65K_SNP_1000G_real_split1.vcf.gz --degree=4 --trials=10000 --output_image_file=quadruplets_analysis.png > quadruplets_results1.tx
