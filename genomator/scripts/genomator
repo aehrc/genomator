@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+description = '''
+ /__ _ __  _ __  _ _|_ _  __                                             
+ \_|(/_| |(_)|||(_| |_(_) |  
+
+ GENOMATOR (pre-alpha 0.1.5)\n
+ Authors: Mark A Burgess\n
+ generates <NUMBER_OF_GENOMES> synthetic genomes from a dataset of an <INPUT_VCF_FILE> to an <OUTPUT_VCF_FILE> with <DIVERSITY_REQUIREMENT> from the dataset.
+ The generated genomes will each be different from each other by <GENERATED_DIVERSITY_REQUIREMENT> for fun and profit!
+
+ the <DIVERSITY_REQUIREMENT> and <GENERATED_DIVERSITY_REQUIREMENT> are integers that specifies that the resulting synthetic genomes must be different from supplied genomes/themselves by a minimum distance (Hamming distance in logical space).\n
+
+ optionally <REFORMATED_INPUT_VCF_FILE> will be the successfully parsed lines of the <INPUT_VCF_FILE>
+ optionally the <EXCEPTION_SPACE> (default 0) is the additional strength of the discriminator (informing how similar the resulting genomes will be to dataset).
+ optionally specifying the <SOLVER_NAME> to use a different SAT solver from the PYSAT python library. (note: not all solvers support cardinality constraints nessisary for operation)
+
+ NOTE: not all genomes/diversity_requirements are possible (owing to current query structure (can be weakened in future) you need ~> 16 genomes to be able to meaningfully diversify on random data)
+'''
+
+def docstring(s):
+    def _decorator(func):
+        func.__doc__=s
+        return func
+    return _decorator
+
+import click
+from pysat.solvers import SolverNames
+from genomator import *
+from random import shuffle, seed, random, randint
+import pickle
+
+SolverNames = sum([list(getattr(SolverNames,a)) for a in dir(SolverNames) if "_" not in a],[]) + ["tinicard"] + ['cmsgen']
+@click.command()
+@click.argument('input_vcf_file', type=click.types.Path())
+@click.argument('output_vcf_file', type=click.types.Path())
+@click.argument('number_of_genomes', type=click.INT, default=1)
+@click.argument('diversity_requirement', type=click.INT, default=0)
+@click.argument('generated_diversity_requirement', type=click.INT, default=0)
+@click.option('--solver_name', type=click.Choice(SolverNames,case_sensitive=False), default="minicard")
+@click.option('--exception_space', type=click.FLOAT, default=0)
+@click.option('--indexation_bits', type=click.INT, default=8)
+@click.option('--sample_group_size', type=click.INT, default=10)
+@click.option('--no_smart_clustering', '-nc', is_flag=True, help="disables smart clustering")
+@click.option('--del_info_field', '-di', is_flag=True, help="Disables copying the INFO field on output")
+@click.option('--no_biasing', '-nb', is_flag=True, help="Disables phase biasing for tinisat")
+@click.option('--cluster_information_file', type=click.types.Path(), default=None)
+@click.option('--difference_samples', type=click.INT, default=10000)
+@click.option('--looseness', type=click.FLOAT, default=0)
+@click.option('--max_restarts', type=click.INT, default=10)
+@click.option('--dump_all_generated', '-da', is_flag=True, help="dump generated individuals if max_restarts is hit")
+@click.option('--involutions', type=click.INT, default=1)
+@click.option('--tasks', type=click.INT, default=1)
+@click.option('--noise', type=click.FLOAT, default=0)
+@click.option('--kull', type=click.INT, default=None)
+@docstring(description)
+def Genomator(
+        input_vcf_file,
+        output_vcf_file,
+        number_of_genomes,
+        diversity_requirement,
+        generated_diversity_requirement,
+        solver_name,
+        exception_space,
+        indexation_bits,
+        sample_group_size,
+        no_smart_clustering,
+        del_info_field,
+        no_biasing,
+        cluster_information_file,
+        difference_samples,
+        looseness,
+        max_restarts,
+        dump_all_generated,
+        involutions,
+        tasks,
+        noise,
+        kull
+    ):
+    input_extension = input_vcf_file.split(".")[-1]
+    if input_extension=="hapt":
+        genomes = parse_HAPT_to_genome_strings(input_vcf_file)
+    if input_extension=="pickle":
+        with open(input_vcf_file,"rb") as f:
+            genomes,ploidy = pickle.load(f)
+    else:
+        genomes, ploidy = parse_VCF_to_genome_strings(input_vcf_file)
+    if kull is not None:
+        genomes = genomes[:kull]
+    print("generating new genome from VCF information")
+    for i in range(involutions):
+        genomes = generate_genomes(
+            genomes,
+            sample_group_size,
+            None,
+            number_of_genomes if i==involutions-1 else len(genomes),
+            diversity_requirement,
+            generated_diversity_requirement,
+            exception_space=exception_space,
+            solver_name=solver_name,
+            indexation_bits=indexation_bits,
+            biasing=(not no_biasing),
+            cluster_information_file=cluster_information_file,
+            no_smart_clustering=no_smart_clustering,
+            difference_samples=difference_samples,
+            looseness=looseness,
+            max_restarts=max_restarts,
+            dump_all_generated=dump_all_generated,
+            tasks=tasks,
+        )
+        if noise>0:
+            genomes = [bytes([randint(0,1) if random()<noise else i for i in g]) for g in genomes]
+        elif noise<0: # if noise is negative, then only apply it on the last involution
+            if i==involutions-1:
+                genomes = [bytes([randint(0,1) if random()<-noise else i for i in g]) for g in genomes]
+    if len(genomes)>0:
+        output_extension = output_vcf_file.split(".")[-1]
+        if output_extension=="hapt":
+            parse_genome_strings_to_HAPT(genomes, output_vcf_file)
+        elif output_extension=="pickle" or input_extension=="pickle":
+            with open(output_vcf_file, "wb") as f:
+                pickle.dump(genomes,f)
+        else:
+            parse_genome_strings_to_VCF(genomes, input_vcf_file, output_vcf_file, ploidy, del_info_field)
+    else:
+        print("no genomes outputted")
+
+if __name__ == '__main__':
+	Genomator()

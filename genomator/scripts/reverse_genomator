@@ -1,0 +1,73 @@
+#!/home/bur471/Desktop/env/bin/python
+description = '''
+___   ___       ___  __   __   ___                                          
+|__) |__  \  / |__  |__) /__` |__                                           
+|  \ |___  \/  |___ |  \ .__/ |___                                          
+
+      /__ _ __  _ __  _ _|_ _  __                                             
+      \_|(/_| |(_)|||(_| |_(_) |  
+
+ REVERSE GENOMATOR (pre-alpha 0.0.1)\n
+ Authors: Mark A Burgess\n
+
+For a sequence of synthetic outputs <SYNTHETIC_VCF_FILE> and an input dataset <INPUT_VCF_FILE>.
+Formulate the problem of counting how many combinations of genomes from the input dataset
+could possibly yield each of the synthetic outputs. 
+
+Secondarily in these counts, count how many times each of the input genomes occur.
+Indirectly, the more often a input genome occurs in combinations which yeild a specific output,
+the more likely that individual was nessisary in the production of that output under genomator.
+And consequently the more likely that individuals privacy is compromised.
+'''
+
+import click
+from tqdm import tqdm
+from genomator import *
+import json
+def docstring(s):
+    def _decorator(func):
+        func.__doc__=s
+        return func
+    return _decorator
+
+@click.command()
+@click.argument('input_vcf_file', type=click.types.Path())
+@click.argument('synthetic_vcf_file', type=click.types.Path())
+@click.argument('cluster_size', type=click.INT)
+@click.option('--upper_exception_space', type=click.FLOAT, default=0)
+@click.option('--diversity_requirement', type=click.INT, default=0)
+@click.option('--output_file', type=click.types.Path(), default=None)
+@click.option('--max_iterations', type=click.INT, default=None)
+@click.option('--timeout', type=click.INT, default=None)
+@docstring(description)
+def ReverseGenomator(input_vcf_file, synthetic_vcf_file, cluster_size, upper_exception_space, diversity_requirement, output_file,max_iterations,timeout):
+    genomes,ploidy = parse_VCF_to_genome_strings(input_vcf_file)
+    fake_genomes,ploidy = parse_VCF_to_genome_strings(synthetic_vcf_file)
+    genomes = fake_genomes + genomes
+
+    #if not upper_exception_space:
+    #    clauses,max_variable = generate_genomator_indices(genomes,cluster_size, diversity_requirement=diversity_requirement)
+    #    solutions = sat_count(clauses,len(genomes)+1,max_variable,max_iterations=max_iterations,timeout)
+    #else:
+    clauses,max_variable = generate_genomator_indices(genomes,cluster_size,False,False,diversity_requirement)
+    #solutions = sat_count_tinicard(clauses,len(genomes)+1,max_variable,cluster_size,upper_exception_space,max_iterations,timeout)
+    solutions = sat_count_minicard(clauses,len(genomes)+1,max_variable,cluster_size,upper_exception_space,max_iterations,timeout)
+
+    data = (len(solutions), [sum([i in s for s in solutions]) for i in tqdm(range(1,len(genomes)))])
+    if output_file:
+        with open(output_file,"a") as f:
+            json.dump(data,f)
+    print(data[0],sorted(data[1]))
+    threshold = data[0]*cluster_size*1.0/len(genomes)
+    min_threshold = int(0.2*threshold)
+    max_threshold = min(int(0.5+2*threshold),data[0]*0.8)
+    print("Totally Compromised Individuals\n\t{}".format(sum([ d==data[0] for d in data[1] ])))
+    print("Privacy Compromised Individuals:\n\t{}".format(sum([ d>max_threshold for d in data[1] ])))
+    print("Eliminated Individuals:\n\t{}".format(sum([ d<min_threshold for d in data[1] ])))
+    print("Individuals in doubt:\n\t{}".format(sum([ d<=max_threshold and d>=min_threshold for d in data[1] ])))
+
+
+if __name__ == '__main__':
+	ReverseGenomator()
+
+
