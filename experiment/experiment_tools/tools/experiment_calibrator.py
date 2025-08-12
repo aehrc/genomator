@@ -1,28 +1,12 @@
 #!/usr/bin/env python3
 from experiment_tools import *
-from random import shuffle,randint
+from random import shuffle,randint,random
 import numpy as np
 import pickle
 import multiprocessing as mp
 from sys import argv
 from genomator import *
 
-print("GENOMATOR_CALIBRATOR")
-if len(argv)!=6:
-    print("please call: experiment_calibrator.py <INPUT_VCF_FILE> <START_N> <FINISH_N> <L> <FINISH_Z>")
-    print("")
-    print("  where <INPUT_VCF_FILE> is the path to a genome dataset file for input")
-    print("  where <START_N> is the value of N to start with")
-    print("  where <FINISH_N> is the value of N to finish with")
-    print("  where <L> is the value of L throughout the experiments")
-    print("  where <FINISH_Z> is the value of Z to finish with")
-    print("")
-    print("The script runs genoamtor with the set L, starting from Z=0 and N=START_N")
-    print("and in 10 equal increments runs genomator upto Z=FINISH_Z and N=FINISH_N")
-    print("for each evaluating where genomator's output is about as far apart from the input dataset")
-    print("as the input dataset is from itself")
-    print("thereafter giving the command to generate with genomator using the resolved best parameters")
-    print("")
 
 input_vcf_file1 = argv[1]
 start_N = int(argv[2])
@@ -44,6 +28,9 @@ def load_file(f,postpend=True):
 input_vcf_file1 = load_file(input_vcf_file1)
 shuffle(input_vcf_file1)
 input_vcf_file1, input_vcf_file2 = input_vcf_file1[:len(input_vcf_file1)//2], input_vcf_file1[len(input_vcf_file1)//2:]
+
+input_vcf_file1 = input_vcf_file1[:150]
+input_vcf_file2 = input_vcf_file2[:150]
 
 
 def get_min_dist(args):
@@ -107,8 +94,8 @@ if __name__ == '__main__':
     print("ABS_OFF_TARGET,OFF_TARGET,N,Z,L")
     for r in results:
         print(','.join([str(rr) for rr in r]))
-    results = sorted(results)
+    results = sorted(results, key=lambda x:x[0])
     results = results[0]
-    print("BEST RESULT is: N={N}, Z={Z}, L={L}")
+    print(f"BEST RESULT is: N={N}, Z={Z}, L={L}")
     print(f"genomator <INPUT_VCF_FILE> <OUTPUT_VCF_FILE> <NUMBER_OF_GENOMES_TO_GENERATE> 0 0 --exception_space={Z} --sample_group_size={N} --looseness={L}")
 
