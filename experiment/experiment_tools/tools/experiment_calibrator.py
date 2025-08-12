@@ -12,10 +12,10 @@ if len(argv)!=6:
     print("please call: experiment_calibrator.py <INPUT_VCF_FILE> <START_N> <FINISH_N> <L> <FINISH_Z>")
     print("")
     print("  where <INPUT_VCF_FILE> is the path to a genome dataset file for input")
-    print("  where <START_N> is the value of N to start with")
-    print("  where <FINISH_N> is the value of N to finish with")
-    print("  where <L> is the value of L throughout the experiments")
-    print("  where <FINISH_Z> is the value of Z to finish with")
+    print("  where <START_N> is the value of N to start with (default 50)")
+    print("  where <FINISH_N> is the value of N to finish with (default 250)")
+    print("  where <L> is the value of L throughout the experiments (default 0.99)")
+    print("  where <FINISH_Z> is the value of Z to finish with (default -2.5)")
     print("")
     print("The script runs genoamtor with the set L, starting from Z=0 and N=START_N")
     print("and in 10 equal increments runs genomator upto Z=FINISH_Z and N=FINISH_N")
@@ -24,12 +24,13 @@ if len(argv)!=6:
     print("thereafter giving the command to generate with genomator using the resolved best parameters")
     print("")
 
+assert len(argv)>=2
 
 input_vcf_file1 = argv[1]
-start_N = int(argv[2])
-finish_N = int(argv[3])
-L = float(argv[4])
-finish_Z = -float(argv[5])
+start_N = int(argv[2]) if len(argv)>2 else 50
+finish_N = int(argv[3]) if len(argv)>3 else 250
+L = float(argv[4]) if len(argv)>4 else 0.99
+finish_Z = -float(argv[5]) if len(argv)>5 else -2.5
 
 silent=True
 def load_file(f,postpend=True):
