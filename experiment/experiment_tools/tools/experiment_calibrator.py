@@ -31,8 +31,8 @@ input_vcf_file1 = argv[1]
 start_N = int(argv[2]) if len(argv)>2 else 50
 finish_N = int(argv[3]) if len(argv)>3 else 250
 L = float(argv[4]) if len(argv)>4 else 0.99
-start_Z =  -float(argv[6]) if len(argv)>6 else -0.5
-finish_Z = -float(argv[5]) if len(argv)>5 else -2.5
+start_Z =  -float(argv[5]) if len(argv)>5 else -0.5
+finish_Z = -float(argv[6]) if len(argv)>6 else -2.5
 
 silent=True
 def load_file(f,postpend=True):
@@ -74,9 +74,9 @@ if __name__ == '__main__':
     breaking = False
     while not breaking:
         results = []
-        for i in range(10):
+        for i in range(11):
             p = i*1.0/10
-            Z = finish_Z*p
+            Z = start_Z + (finish_Z-start_Z)*p
             N = int(start_N + (finish_N-start_N)*p)
 
             print(f"computation {p*100}% complete, trying N={N},Z={Z},L={L}")
