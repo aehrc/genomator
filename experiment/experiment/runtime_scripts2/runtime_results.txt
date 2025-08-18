@@ -1,0 +1,6 @@
+METHOD,SCALE,TIME
+Genomator,1,11.19
+Genomator,10,116.48
+Genomator,100,1201.64
+Genomator,1000,11823.09
+Genomator,10000,115572.32

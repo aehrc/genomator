@@ -1,0 +1,39 @@
+completed implication generation loop
+	Command being timed: "genomator ../sources/chr_filtered_25600.vcf.gz.pickle dummy_output_GENO1501.50.99 1 0 0 --sample_group_size=150 --exception_space=-1.5 --solver_name=tinicard --difference_samples=100 --noise=0 --involutions=1 --looseness=0.99 --kull=420 -nb"
+	User time (seconds): 11.19
+	System time (seconds): 0.34
+	Percent of CPU this job got: 38%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:29.94
+	Average shared text size (kbytes): 0
+--
+completed implication generation loop
+	Command being timed: "genomator ../sources/chr_filtered_25600.vcf.gz.pickle dummy_output_GENO1501.50.99 10 0 0 --sample_group_size=150 --exception_space=-1.5 --solver_name=tinicard --difference_samples=100 --noise=0 --involutions=1 --looseness=0.99 --kull=420 -nb"
+	User time (seconds): 116.48
+	System time (seconds): 0.89
+	Percent of CPU this job got: 86%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:15.79
+	Average shared text size (kbytes): 0
+--
+completed implication generation loop
+	Command being timed: "genomator ../sources/chr_filtered_25600.vcf.gz.pickle dummy_output_GENO1501.50.99 100 0 0 --sample_group_size=150 --exception_space=-1.5 --solver_name=tinicard --difference_samples=100 --noise=0 --involutions=1 --looseness=0.99 --kull=420 -nb"
+	User time (seconds): 1201.64
+	System time (seconds): 4.01
+	Percent of CPU this job got: 98%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 20:24.17
+	Average shared text size (kbytes): 0
+--
+completed implication generation loop
+	Command being timed: "genomator ../sources/chr_filtered_25600.vcf.gz.pickle dummy_output_GENO1501.50.99 1000 0 0 --sample_group_size=150 --exception_space=-1.5 --solver_name=tinicard --difference_samples=100 --noise=0 --involutions=1 --looseness=0.99 --kull=420 -nb"
+	User time (seconds): 11823.09
+	System time (seconds): 14.30
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:17:36
+	Average shared text size (kbytes): 0
+--
+completed implication generation loop
+	Command being timed: "genomator ../sources/chr_filtered_25600.vcf.gz.pickle dummy_output_GENO1501.50.99 10000 0 0 --sample_group_size=150 --exception_space=-1.5 --solver_name=tinicard --difference_samples=100 --noise=0 --involutions=1 --looseness=0.99 --kull=420 -nb"
+	User time (seconds): 115572.32
+	System time (seconds): 99.86
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 32:08:13
+	Average shared text size (kbytes): 0
