@@ -112,7 +112,7 @@ if __name__ == '__main__':
     for r in results:
         print(','.join([str(rr) for rr in r]))
     results = sorted(results, key=lambda x:x[0])
-    results = results[0]
+    abs_error, error, N,Z,L = results[0]
     print(f"BEST RESULT is: N={N}, Z={Z}, L={L}")
     print(f"genomator <INPUT_VCF_FILE> <OUTPUT_VCF_FILE> <NUMBER_OF_GENOMES_TO_GENERATE> 0 0 --exception_space={Z} --sample_group_size={N} --looseness={L}")
 
