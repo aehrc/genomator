@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+from matplotlib import patches
 from collections import defaultdict
 
 with open("results.txt",'r') as f:
@@ -17,7 +18,9 @@ while len(data)!=0:
 base_colours = ['r','b','g','m','c','k','y']*5
 markers = ['.','v','s','P','*','d','X']*5
 plt.figure()
-for i,k in enumerate(sorted(converted_data.keys())):
+keys = sorted(converted_data.keys())
+keys.remove("x")
+for i,k in enumerate(keys):
     xs,ys = list(zip(*converted_data[k]))
     ys = [ys[i] - xs[i] for i in range(len(ys))]
     plt.scatter(xs,
@@ -27,6 +30,11 @@ for i,k in enumerate(sorted(converted_data.keys())):
             label=k.capitalize(),
             alpha=0.8,
             marker=markers[i])
+
+plt.gca().add_patch(patches.Rectangle((0.1750,0.0006),0.015,0.0005, linewidth=1, edgecolor="black", facecolor="none"))
+vert_x = converted_data['x'][0][0]
+plt.gca().add_patch(patches.Rectangle((vert_x,0.0),-0.0,0.0025, linewidth=1, edgecolor=base_colours[4], facecolor="none"))
+#plt.gca().add_patch(patches.Rectangle((0.17,0.0),0.06,0.0, linewidth=1, edgecolor="black", facecolor="none"))
 
 lgnd = plt.legend(loc="upper right", scatterpoints=1, fontsize=10)
 plt.xlabel("In-data distance")

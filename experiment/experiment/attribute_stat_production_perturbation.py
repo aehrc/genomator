@@ -27,5 +27,5 @@ def run_system(a):
 for file in tqdm(datasetfiles):
     filename = f"./attribute_scripts/results2_{file.split('/')[-1]}.txt"
     run_system(f"echo {file.split('/')[-1]} >> {filename}")
-    run_system(f"attribute_inference_experiment.py {reffile1} {reffile2} {file.replace('split2','split1')} {file} >> {filename}")
+    run_system(f"attribute_inference_experiment.py {reffile1} {reffile2} {file.replace('split2','split1')} {file} -1 -1 5 >> {filename}")
 

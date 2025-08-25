@@ -7,6 +7,7 @@ import multiprocessing as mp
 from sys import argv
 
 
+
 original_vcf_file1 = argv[1]
 original_vcf_file2 = argv[2]
 output_vcf_file1 = argv[3]
@@ -24,6 +25,12 @@ if len(argv)>5:
         sample_length = None
 else:
     sample_length = None
+if len(argv)>6:
+    processes=int(argv[7])
+    if processes <= 0:
+        processes = None
+else:
+    processes = None
 silent=True
 
 def load_file(f,postpend=True):
@@ -75,11 +82,21 @@ def get_min_dist_pair(args):
     return (x,y)
 
 if __name__ == '__main__':
-    with mp.get_context("spawn").Pool(mp.cpu_count() ) as pool:
-        results = ( list(pool.imap_unordered(get_min_dist_pair, [(i,o.copy(),False) for i,o in enumerate(original1)])) +
-                    list(pool.imap_unordered(get_min_dist_pair, [(i,o.copy(),True ) for i,o in enumerate(original2)])) )
-        pool.close()
-        pool.join()
+    if processes is None:
+        with mp.get_context("spawn").Pool(mp.cpu_count() ) as pool:
+            results = ( list(pool.imap_unordered(get_min_dist_pair, [(i,o.copy(),False) for i,o in enumerate(original1)])) +
+                        list(pool.imap_unordered(get_min_dist_pair, [(i,o.copy(),True ) for i,o in enumerate(original2)])) )
+            pool.close()
+            pool.join()
+    elif processes==0:
+        results = ( list(map(get_min_dist_pair, [(i,o.copy(),False) for i,o in enumerate(original1)])) +
+                    list(map(get_min_dist_pair, [(i,o.copy(),True ) for i,o in enumerate(original2)])) )
+    else:
+        with mp.get_context("spawn").Pool(processes) as pool:
+            results = ( list(pool.imap_unordered(get_min_dist_pair, [(i,o.copy(),False) for i,o in enumerate(original1)])) +
+                        list(pool.imap_unordered(get_min_dist_pair, [(i,o.copy(),True ) for i,o in enumerate(original2)])) )
+            pool.close()
+            pool.join()
 
     x_results = [x for x,y in results]
     y_results = [y for x,y in results]
