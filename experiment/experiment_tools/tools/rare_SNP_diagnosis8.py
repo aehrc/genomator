@@ -102,7 +102,8 @@ def load_file(f):
 @click.option('--trials', '-t', type=click.types.INT, default=10000)
 @click.option('--degree', '-d', type=click.types.INT, default=4)
 @click.option('--output_image_file', default="Rare_SNP_analysis_output.png")
-def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
+@click.option('--snps_limit', type=click.INT, default=None)
+def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file,snps_limit):
     input_vcf_files, dataset_files = input_vcf_files[1::2], input_vcf_files[::2]
     input_files = sorted(list(zip(*[input_vcf_files, dataset_files])))
     input_vcf_files, dataset_files = zip(*input_files)
@@ -122,14 +123,23 @@ def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file):
     for k,v in labels.items():
         reverse_labels[v].append(dataset_files.index(k))
     plt.figure()
+    limit_indices = None
     for k in sorted(reverse_labels.keys()):
         xs = []
         ys = []
         for i in reverse_labels[k]:
             print(dataset_files[i])
             d = load_file(dataset_files[i])
+            if snps_limit is not None:
+                if limit_indices is None:
+                    limit_indices = list(range(len(d[0])))
+                    shuffle(limit_indices)
+                    limit_indices = limit_indices[:snps_limit]
+                d = [bytes([dd[i] for i in limit_indices]) for dd in d]
             d = list(map(tuple, zip(*d)))
             transpose_ref_genome = load_file(input_vcf_files[i])
+            if snps_limit is not None:
+                transpose_ref_genome = [bytes([dd[i] for i in limit_indices]) for dd in transpose_ref_genome]
             transpose_ref_genome = list(map(tuple, zip(*transpose_ref_genome)))
             unique_responses = export_xcorr(transpose_ref_genome, d, degree, trials=trials, selector=select_unique_A_count_B)
             zero_responses = export_xcorr(transpose_ref_genome, d, degree, trials=trials, selector=select_non_A_count_B)
