@@ -93,6 +93,7 @@ void SatSolver::initialiseVariableOrder() {
 }
 
 
+// different heuristics for variable selection are go here (feel free to experiment)
 int SatSolver::selectLiteral(){
   /*for (int i=0; i<vars.size(); i++) {
     vars[i].activity[0]=0;

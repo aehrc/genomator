@@ -22,7 +22,7 @@ def convert_to_binary(A):
 wrap_values = lambda x,N: (x+N)%(2*N+1)-N
 
 def check_square_values(genomes,values=False):
-    # sanity check that the genomes make sense
+    # sanity check that the genomes make sense (ie. all are same length etc)
     if values:
         for i in range(len(genomes)):
             for v in genomes[i]:
@@ -31,7 +31,9 @@ def check_square_values(genomes,values=False):
         for j in range(len(genomes)):
             assert len(genomes[i])==len(genomes[j]), "genomes need to be the same length"
 
-
+# setup a range of clusters for the genomes to be sampled from, so that every genome has an 
+# even chance of being in a cluster, and these clusters are overlapping
+# clusters bassed on hamming distance (in the event SNP presence is 0/1)
 def cluster_setup(reference_genomes, size, clustering=30, difference_samples=100, silent=False):
     length = len(reference_genomes)
     difference_samples = min(len(reference_genomes[0]),difference_samples)
@@ -65,12 +67,14 @@ def cluster_setup(reference_genomes, size, clustering=30, difference_samples=100
         index_sets.append(list(set(range(length)).difference(set(used_set))))
     return index_sets 
 
+#select a cluster of genomes
 def cluster_sample(reference_genomes,sample_group_size,index_sets):
     index_set = choice(index_sets)
     genomes = [reference_genomes[ii] for ii in index_set]
     shuffle(genomes)
     return genomes, index_set
 
+# choice a number from array <a> where each element has probability <p>
 def weighted_choice(a,p):
     pp = np.cumsum(p).tolist()
     assert abs(pp[-1]-1)<0.001
@@ -83,29 +87,37 @@ def weighted_choice(a,p):
         return a[i]
     return inner_
 
+# the inner method (to be parallelised) of the generation process
 def parallel_inner( args ):
     reference_genomes, sample_group_size, basevalues, diversity_requirement, generated_diversity_requirement, no_smart_clustering, exception_space, silent, indexation_bits, biasing, solver_name, looseness, max_restarts, cluster_info, genome_number = args
-    if solver_name=='tinicard':
+    if solver_name=='tinicard': # import tinicard if selected
         import pytinicard
         indexation_bits = min(indexation_bits,sample_group_size)
-    if solver_name=="cmsgen":
+    if solver_name=="cmsgen": # import cmsgen (unbiased solver) if selected
         import pycmsgen
-    bytes_mode = isinstance(reference_genomes[0],bytes)
+    bytes_mode = isinstance(reference_genomes[0],bytes) # are we reasining in byte-strings?
     rootstring = b"" if bytes_mode else ""
-    try:
+    try: # checking if .bit_count() function exists (older python versions dont have it)
         (1234567890).bit_count()
         bit_count_function = lambda x: x.bit_count()
     except AttributeError:
         bit_count_function = lambda x: bin(x).count("1")
+
+    # the exception_space (ie. our 'Z' parameter) needs to be randomly drawn from a function
+    # note exception_space being positive or negative has different behaviour
     exception_space_array = list(range(int(abs(exception_space))+2))
     exception_space_probability = [min(1,abs(exception_space)+1-a) for a in exception_space_array]
     exception_space_probability = [a*1.0/sum(exception_space_probability) for a in exception_space_probability]
     exception_space_drawer = weighted_choice(exception_space_array,exception_space_probability)
+
     restarts = 0
     cluster_information_file = None
     solution_set = []
-    while ((restarts < max_restarts) or (max_restarts<0)):
+    while ((restarts < max_restarts) or (max_restarts<0)): # begin main loop
+
         reference_genomes, sample_group_size, basevalues, diversity_requirement, generated_diversity_requirement, no_smart_clustering, exception_space, silent, indexation_bits, biasing, solver_name, looseness, max_restarts, cluster_info, genome_number = args
+
+        # draw cluster
         if sample_group_size>0:
             if no_smart_clustering:
                 index_set = sample(list(range(len(reference_genomes))),sample_group_size)
@@ -117,6 +129,7 @@ def parallel_inner( args ):
             genomes = reference_genomes
 
         cluster_information_file = index_set
+        # transform and consider unique SNP sets
         transposed_genomes = list(map(tuple, zip(*genomes)))
         unique_transposed_genomes = sorted(list(set(transposed_genomes)))
 
@@ -154,6 +167,7 @@ def parallel_inner( args ):
         print_silent("adding indistinguisability requirements",silent)
         binary_queries = [convert_to_binary(q) for q in queries]
 
+        # add biasing if desired and using tinicard to get less biased results
         if solver_name=='tinicard' and biasing:
             print_silent("calculating randomisation seeds", silent)
             seeds = [1.0-sum(q)/len(q) for q in queries[:variables]]
@@ -176,20 +190,15 @@ def parallel_inner( args ):
         
         print_silent("Inserting indistuinguishability requirements",silent)
         if solver_name=='tinicard':
-            #pytinicard.AddMemoryImplicationExtension(solver, binary_queries, len(queries[0]), 1, 1)
-            #pytinicard.AddFastMemoryImplicationExtension(solver, binary_queries, len(queries[0]), indexation_bits, 1, 1)
-            #pytinicard.AddFastRangedMemoryImplicationExtension(solver, binary_queries, len(queries[0]), indexation_bits, 1, 1)
-            #pytinicard.AddMemoryCountImplicationExtension(solver, binary_queries, len(queries[0]), exception_space, 0)
-
-            #if (exception_space !=0):
-            #    pytinicard.AddFastCountCompactMemoryImplicationExtension(solver, binary_queries, len(queries[0]), indexation_bits, exception_space, looseness, 1 if not silent else 0, 1)
-            #else:
-            #    pytinicard.AddFastCompactMemoryImplicationExtension(solver, binary_queries, len(queries[0]), indexation_bits, 1 if not silent else 0, 1)
+            # if tinicard use the extension to generate implications dynamically
             pytinicard.AddFastCountCompactMemoryImplicationExtension(solver, binary_queries, len(queries[0]), indexation_bits, exception_space, looseness, 1 if not silent else 0, 1)
         else:
+            # otherwise we need to add implications directly
             mask = convert_to_binary([True for i in range(len(queries[0]))])
             binary_queries = [convert_to_binary(q) for q in queries]   
             query_index_to_variable = [wrap_values(i+1,variables) for i in range(len(queries))]
+
+            # NOTE: we need to split these out for runtime reasons (rather than having the comparrison in the inside of these loops)
             if exception_space==0:
                 if looseness>0:
                     for i,k1 in enumerate((tqdm(binary_queries) if not silent else binary_queries)):
@@ -217,7 +226,6 @@ def parallel_inner( args ):
                             k2 = binary_queries[j]
                             resolved_mask = ((k1|k2)&mask)^mask
                             bits_different = bit_count_function(resolved_mask)
-                            #if bits_different <= np.random.choice(exception_space_array,p=exception_space_probability):
                             if bits_different <= exception_space_drawer():
                                 if query_index_to_variable[i]!=-query_index_to_variable[j]:
                                     solver.add_clause([ -query_index_to_variable[i],-query_index_to_variable[j] ])
@@ -227,7 +235,6 @@ def parallel_inner( args ):
                             k2 = binary_queries[j]
                             resolved_mask = ((k1|k2)&mask)^mask
                             bits_different = bit_count_function(resolved_mask)
-                            #if bits_different <= np.random.choice(exception_space_array,p=exception_space_probability):
                             if bits_different <= exception_space_drawer():
                                 if query_index_to_variable[i]!=-query_index_to_variable[j]:
                                     solver.add_clause([ -query_index_to_variable[i],-query_index_to_variable[j] ])
@@ -296,11 +303,6 @@ def parallel_inner( args ):
             pass
         else:
             if biasing:
-                #frequencies = [sum(q)/len(q) for q in queries[:variables]]
-                ##e = 0.5 #https://stats.stackexchange.com/questions/214877/is-there-a-formula-for-an-s-shaped-curve-with-domain-and-range-0-1
-                #extremisation_function = lambda f: 1 if f<0.4 else 0 if f>0.6 else 0.5 #lambda f: f**e/(f**e+(1-f)**e)
-                #frequencies = [extremisation_function(f) for f in frequencies]
-                #solver.set_phases([(i+1) * (1 if random()<frequencies[i] else -1) for i in range(variables)])
                 solver.set_phases([(i+1) * (-1) for i in range(variables)])
             else:
                 # randomise phase information to add some randomness
@@ -367,6 +369,7 @@ def generate_genomes(
     tasks=1
     ):
     
+    # do sense checks, and prepare to output file about information on clusters if desired
     assert sample_group_size <= len(reference_genomes), "cannot cluster group more than there are genomes"
     check_square_values(reference_genomes,basevalues)
     if cluster_information_file is not None:
@@ -375,6 +378,7 @@ def generate_genomes(
 
     genome_solutions = []
 
+    # setup clusters if desired
     print_silent("priming cluster method",silent)
     cluster_info = None
     if (not no_smart_clustering) and sample_group_size>=0:
@@ -382,7 +386,7 @@ def generate_genomes(
     print_silent("Entering the Solving process - generating genomes",silent)
 
     assert number_of_genomes>0
-    try:
+    try: # setup parallel tasks and run in parallel if desired
         tasks_parameters = [(
                 reference_genomes, sample_group_size, basevalues,
                 diversity_requirement, generated_diversity_requirement, no_smart_clustering,
@@ -407,12 +411,15 @@ def generate_genomes(
         print(traceback.format_exc())
 
 
+    # output cluster info if desired
     cluster_information = [g[1] for g in genome_solutions if g[0] is not None]
     if cluster_information_file is not None:
         with open(cluster_information_file,"a") as f:
             for c in cluster_information:
                 f.write(str(c))
                 f.write("\n")
+
+    # output final genomes
     genome_solutions = [g[0] for g in genome_solutions if g[0] is not None]
     print_silent("{} solutions generated".format(len(genome_solutions)),silent)
     if not dump_all_generated:
