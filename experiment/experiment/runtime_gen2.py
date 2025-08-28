@@ -1,3 +1,6 @@
+
+# generate scripts for conducting runtime experiments for genomator with scale of number of genomes
+
 from random import randint
 from source_gen import *
 

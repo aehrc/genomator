@@ -1,3 +1,7 @@
+
+# calculating results for attribute_inference_experiment from available pickle files
+# into 'results2' files in attributes_scripts directory
+
 import glob
 import os
 import sys

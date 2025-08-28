@@ -1,3 +1,6 @@
+
+# generate scripts for running methods with 2500 synthetic genomes output
+
 from source_gen import *
 out_template = "../attribute_larger/{}.vcf.pickle"
 

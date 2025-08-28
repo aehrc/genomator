@@ -1,3 +1,6 @@
+
+# script with conducts analysis of reverse genomator experiment output and produces graph
+
 import glob
 import matplotlib.pyplot as plt
 import json

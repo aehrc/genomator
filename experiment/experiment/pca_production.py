@@ -1,3 +1,6 @@
+
+# produces PCAs of synthetic 65k snp data from the methods
+
 import glob
 import os
 from tqdm import tqdm

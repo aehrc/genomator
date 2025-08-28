@@ -3,14 +3,26 @@ python attribute_experiment.py
 cd attribute_scripts
 source petrichor_run.sh
 source virga_run.sh
+cat results2* > results.txt
+rm results2*
 cd ..
 python attribute_experiment_larger.py
 cd attribute_scripts
 source petrichor_run.sh
 source virga_run.sh
 cd ..
+python attribute_perturbation_experiment.py
+cd attribute_scripts
+source virga_run.sh
+cat results2* > perturbation_experiment.txt
+rm results2*
+cd ..
 python attribute_stat_production.py
+python attribute_stat_production_perturbation.py
+cd attribute_scripts
 python process.py
+python perturbation_process.py
+cd ..
 python pca_production.py
 cd attribute_larger
 source run_ld.sh
@@ -19,6 +31,11 @@ cd ..
 python runtime_gen.py
 cd runtime_scripts
 source petrichor_run.sh
+source virga_run.sh
+python produce_graph.py
+cd ..
+python runtime_gen2.py
+cd runtime_scripts2
 source virga_run.sh
 python produce_graph.py
 cd ..

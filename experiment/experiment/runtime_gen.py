@@ -1,3 +1,6 @@
+
+# generate scripts for conducting runtime experiments
+
 from random import randint
 indices = [4**i*100 for i in range(9)] + ['']
 

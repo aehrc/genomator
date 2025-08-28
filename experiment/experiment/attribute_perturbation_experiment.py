@@ -1,3 +1,7 @@
+
+
+# generate scripts for running attribute_inference experiment for genomator with perturbed parameters
+
 from source_gen import *
 out_template = "../attribute_perturbation/{}.vcf.pickle"
 

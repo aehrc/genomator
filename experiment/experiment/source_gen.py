@@ -1,4 +1,6 @@
 
+# download, install and filter source files for subsequent experiments.
+# hold details about how to generate slurm script files (to be executed if slurm available) 
 
 prepend = "https://gitlab.inria.fr/api/v4/projects/18464/repository/files/1000G_real_genomes%2F{}/raw?ref=master"
 hapt_file_zip = "65K_SNP_1000G_real.hapt.zip"
@@ -17,6 +19,7 @@ vcf_file_A = "65K_SNP_1000G_realA.vcf"
 vcf_file_B = "65K_SNP_1000G_realB.vcf"
 vcf_file_C = "65K_SNP_1000G_realC.vcf"
 
+# NOTE: fill in account number and local python environment directories
 account = "####"
 virga_virtual_environment = "../env/"
 petrichor_virtual_environment = "../env/"

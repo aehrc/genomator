@@ -1,5 +1,7 @@
 from source_gen import *
 
+# generate scripts for conducting reverse-genomator experiment
+
 A_begin = '''
 for i in $(seq 1 20)
 do

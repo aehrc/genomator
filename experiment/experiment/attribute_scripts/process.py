@@ -2,6 +2,7 @@ from matplotlib import pyplot as plt
 from matplotlib import patches
 from collections import defaultdict
 
+
 with open("results.txt",'r') as f:
     data = f.readlines()
 data = [d.strip() for d in data]

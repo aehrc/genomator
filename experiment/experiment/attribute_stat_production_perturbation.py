@@ -1,3 +1,7 @@
+
+# calculating results for attribute_inference_experiment for genoamtor with perturbed parameor genoamtor with perturbed parameor genoamtor with perturbed parameor genoamtor with perturbed parameters
+# into 'results2' files in attributes_perturbation directory
+
 import glob
 import os
 import sys
@@ -6,7 +10,7 @@ from tqdm import tqdm
 datasetfiles = glob.glob("./attribute_perturbation/*.pickle")
 datasetfiles = [f for f in datasetfiles if 'split2' in f]
 datasetfiles = sorted(datasetfiles)
-datasetfiles = [d for d in datasetfiles if not os.path.isfile(f"./attribute_scripts/results2_{d.split('/')[-1]}.txt")]
+datasetfiles = [d for d in datasetfiles if not os.path.isfile(f"./attribute_perturbation/results2_{d.split('/')[-1]}.txt")]
 
 if len(sys.argv)>1:
     index = int(sys.argv[1])
@@ -25,7 +29,7 @@ def run_system(a):
     os.system(a)
 
 for file in tqdm(datasetfiles):
-    filename = f"./attribute_scripts/results2_{file.split('/')[-1]}.txt"
+    filename = f"./attribute_perturbation/results2_{file.split('/')[-1]}.txt"
     run_system(f"echo {file.split('/')[-1]} >> {filename}")
     run_system(f"attribute_inference_experiment.py {reffile1} {reffile2} {file.replace('split2','split1')} {file} -1 -1 5 >> {filename}")
 
