@@ -5,8 +5,8 @@ from functools import reduce
 from matplotlib.ticker import FuncFormatter
 
 base_colours = ['r','b','g','m','c','k','y'] 
-base_colours = ['#ffb840', '#E4002B', '#6d2382', '#008165']
-base_colours = ['#ff0000', '#81ff00', '#00fff8', '#8100ff']
+#base_colours = ['#ffb840', '#E4002B', '#6d2382', '#008165']
+#base_colours = ['#ff0000', '#81ff00', '#00fff8', '#8100ff']
 
 with open("runtime_results.txt","r") as f:
     data = pd.read_csv(f)
