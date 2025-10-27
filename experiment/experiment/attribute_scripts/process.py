@@ -65,4 +65,4 @@ plt.ylim(-0.0001, 0.0026) # Limit y-axis from -1 to 1
 
 #plt.show()
 plt.savefig("results_attribute_experiment.png", bbox_inches='tight')
-plt.savefig("results_attribute_experiment.eps", format='eps', dpi=300) 
+plt.savefig("results_attribute_experiment.eps", format='eps', dpi=300, bbox_inches='tight') 

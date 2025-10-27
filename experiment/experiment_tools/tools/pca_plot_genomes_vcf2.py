@@ -22,6 +22,7 @@ def plot_PCA(sets,output_file):
         ys = coordinates[:,1]
         ax.scatter(xs, ys,c=[base_colours[i] for j in range(len(xs))],s=50,alpha=0.2)
     plt.savefig(output_file)
+    plt.savefig(output_file+".eps", format='eps', dpi=300, bbox_inches='tight') 
 
 def load_file(f,postpend=True):
     extension = f.split(".")[-1]
