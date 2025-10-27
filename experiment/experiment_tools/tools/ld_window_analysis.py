@@ -161,7 +161,9 @@ def ld_analyse(input_vcf_file,compare_vcf_file,max_offset,max_y_limit,chunk_size
     plt.xlabel("Window size (kbases)")
     plt.ylabel("Average Square error")
     plt.savefig(output_image_file, bbox_inches='tight')
-    plt.show()
+    plt.savefig(output_image_file+".svg", format='svg', bbox_inches='tight') 
+    # NOTE: post conversion of SVG to EPS required (matplot lib does not like transparency needed to meaningfully display this plot)
+    #plt.show()
 
 if __name__ == '__main__':
     ld_analyse()
