@@ -8,7 +8,7 @@ from experiment_tools import *
 import pickle
 
 base_colours = ['r','b','g','m','c','w','k'] 
-base_colours = ['#ff4b4b','b']
+#base_colours = ['#ff4b4b','b']
 
 def plot_PCA(sets,output_file):
     #combined_data = np.matrix(sum(sets,[]))
@@ -21,9 +21,10 @@ def plot_PCA(sets,output_file):
         coordinates = pca_transform.transform(np.asarray(s))
         xs = coordinates[:,0]
         ys = coordinates[:,1]
-        ax.scatter(xs, ys,c=[base_colours[i] for j in range(len(xs))],s=20)
+        ax.scatter(xs, ys,c=[base_colours[i] for j in range(len(xs))],s=50,alpha=0.2)
     plt.savefig(output_file)
-    plt.savefig(output_file+".eps", format='eps', dpi=300, bbox_inches='tight') 
+    #plt.savefig(output_file+".eps", format='eps', dpi=300, bbox_inches='tight') 
+    plt.savefig(output_file+".svg", format='svg', bbox_inches='tight') 
 
 def load_file(f,postpend=True):
     extension = f.split(".")[-1]
