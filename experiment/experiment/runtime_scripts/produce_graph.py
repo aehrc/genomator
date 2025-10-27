@@ -49,3 +49,4 @@ plt.gca().yaxis.set_major_formatter(FuncFormatter(formatter))
 
 plt.tight_layout()
 plt.savefig("runtime_graph.png", bbox_inches='tight')
+plt.savefig("runtime_graph.eps", format='eps', dpi=300, bbox_inches='tight') 
