@@ -163,6 +163,7 @@ def Rare_SNP_analyse(input_vcf_files,trials,degree,output_image_file,snps_limit)
     plt.xlabel("Expectation of private {} occuring in output".format(degrees[degree]))
     plt.ylabel("Expectation of fictitious {} occuring in output".format(degrees[degree]))
     plt.savefig(output_image_file, bbox_inches='tight')
+    plt.savefig(output_image_file+".eps", format='eps', dpi=300, bbox_inches='tight') 
 
 if __name__ == '__main__':
     Rare_SNP_analyse()
