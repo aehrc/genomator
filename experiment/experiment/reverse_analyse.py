@@ -131,6 +131,7 @@ plt.legend(loc="right")
 
 # Save the figure and show
 plt.tight_layout()
-plt.savefig('bar_plot_with_error_bars.png')
+plt.savefig('reverse_analysis_plot.png')
+plt.savefig("reverse_analysis_plot.eps", format='eps', dpi=300, bbox_inches='tight') 
 
 
